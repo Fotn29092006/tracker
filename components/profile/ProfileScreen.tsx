@@ -17,6 +17,7 @@ import { useTheme } from '@/components/theme-provider';
 import { useProfile, useProfileMutations } from '@/hooks/useProfile';
 import { useBodyEntries, useBodyMutations } from '@/hooks/useBody';
 import { BodyEntryForm } from '@/components/body/BodyEntryForm';
+import { SecuritySection } from './SecuritySection';
 import { createClient } from '@/lib/supabase/client';
 import { fmtDateLabel } from '@/lib/utils';
 import type { ThemeMode, BodyEntry } from '@/lib/types';
@@ -166,6 +167,8 @@ export function ProfileScreen() {
           options={[{ value: 'dark', label: 'Тёмная' }, { value: 'light', label: 'Светлая' }, { value: 'auto', label: 'Авто' }]}
         />
       </div>
+
+      <SecuritySection />
 
       <button onClick={signOut} className="flex items-center justify-center gap-2 w-full h-12 rounded-[16px] text-[15px] font-medium text-[var(--negative)] bg-[var(--negative-08)]">
         <LogOut size={18} /> Выйти
