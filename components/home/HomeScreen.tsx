@@ -1,0 +1,146 @@
+'use client';
+
+import { useMemo } from 'react';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { ChevronRight, Wallet, Dumbbell, ListChecks, Check as CheckIcon } from 'lucide-react';
+import { AppHeader } from '@/components/ui/AppHeader';
+import { Check } from '@/components/ui/Check';
+import { listContainer, listItem } from '@/lib/motion';
+import { cn, fmtAmount, currencySymbol, todayISO, isPast, WEEKDAYS_FULL } from '@/lib/utils';
+import { useTasks, useTaskMutations } from '@/hooks/useTodo';
+import { useAccounts, useTransactions } from '@/hooks/useFinance';
+import { usePlan, useSessions } from '@/hooks/useWorkout';
+import { useProfile } from '@/hooks/useProfile';
+
+function greeting(): string {
+  const h = new Date().getHours();
+  if (h < 5) return 'Доброй ночи';
+  if (h < 12) return 'Доброе утро';
+  if (h < 18) return 'Добрый день';
+  return 'Добрый вечер';
+}
+
+export function HomeScreen() {
+  const { data: profile } = useProfile();
+  const { data: tasks = [] } = useTasks();
+  const { toggle } = useTaskMutations();
+  const { data: accounts = [], total } = useAccounts();
+  const { data: transactions = [] } = useTransactions();
+  const { data: plan = [] } = usePlan();
+  const { data: sessions = [] } = useSessions();
+
+  const today = todayISO();
+  const todayDow = new Date().getDay();
+  const currency = accounts[0]?.currency ?? 'KZT';
+
+  const todayTasks = useMemo(
+    () => tasks.filter((t) => !t.done_at && (t.due_date === today || (t.due_date && isPast(t.due_date)))).slice(0, 4),
+    [tasks, today],
+  );
+  const activeTotal = tasks.filter((t) => !t.done_at && (t.due_date === today || (t.due_date && isPast(t.due_date)))).length;
+
+  const monthSpend = useMemo(() => {
+    const ym = today.slice(0, 7);
+    return transactions.filter((t) => t.kind === 'expense' && t.occurred_on.startsWith(ym)).reduce((s, t) => s + t.amount, 0);
+  }, [transactions, today]);
+
+  const todayPlan = plan.filter((p) => p.day_of_week === todayDow);
+  const doneToday = sessions.some((s) => s.performed_on === today);
+
+  const name = profile?.name?.split(' ')[0] || '';
+
+  return (
+    <div>
+      <AppHeader
+        title={greeting()}
+        subtitle={name || undefined}
+        right={
+          <Link href="/profile" className="grid h-11 w-11 place-items-center rounded-full text-[16px] font-bold text-[var(--on-accent)]" style={{ backgroundImage: 'var(--accent-grad)' }}>
+            {(name || profile?.name || '?').slice(0, 1).toUpperCase()}
+          </Link>
+        }
+      />
+
+      <motion.div variants={listContainer} initial="hidden" animate="show" className="space-y-3.5">
+        {/* Tasks */}
+        <motion.div variants={listItem}>
+          <DashCard href="/tasks" icon={ListChecks} title="Задачи на сегодня" badge={activeTotal > 0 ? String(activeTotal) : undefined}>
+            {todayTasks.length === 0 ? (
+              <div className="flex items-center gap-2 text-[14px] text-[var(--text-muted)] pt-1">
+                <CheckIcon size={16} className="text-[var(--positive)]" /> На сегодня всё чисто
+              </div>
+            ) : (
+              <div className="space-y-2 pt-1">
+                {todayTasks.map((t) => (
+                  <div key={t.id} className="flex items-center gap-2.5" onClick={(e) => e.preventDefault()}>
+                    <Check size={22} checked={!!t.done_at} onChange={() => toggle.mutate(t)} />
+                    <span className="text-[14px] truncate">{t.title}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </DashCard>
+        </motion.div>
+
+        {/* Finance */}
+        <motion.div variants={listItem}>
+          <DashCard href="/finance" icon={Wallet} title="Финансы">
+            <div className="flex items-end justify-between pt-1">
+              <div>
+                <p className="text-[12px] text-[var(--text-subtle)]">На счетах</p>
+                <p className="num text-[24px] font-bold leading-tight">{fmtAmount(total)} <span className="text-[var(--text-muted)] text-[16px]">{currencySymbol(currency)}</span></p>
+              </div>
+              <div className="text-right">
+                <p className="text-[12px] text-[var(--text-subtle)]">Траты за месяц</p>
+                <p className="num text-[16px] font-semibold text-[var(--negative)]">−{fmtAmount(monthSpend)}</p>
+              </div>
+            </div>
+          </DashCard>
+        </motion.div>
+
+        {/* Workout */}
+        <motion.div variants={listItem}>
+          <DashCard href="/workout" icon={Dumbbell} title="Тренировка">
+            <div className="pt-1">
+              {doneToday ? (
+                <p className="flex items-center gap-2 text-[14px] font-medium text-[var(--positive)]"><CheckIcon size={16} /> Выполнено сегодня</p>
+              ) : todayPlan.length > 0 ? (
+                <p className="text-[14px] text-[var(--text)]"><span className="font-semibold">{WEEKDAYS_FULL[todayDow]}</span> · {todayPlan.length} упр. запланировано</p>
+              ) : (
+                <p className="text-[14px] text-[var(--text-muted)]">Сегодня день отдыха</p>
+              )}
+            </div>
+          </DashCard>
+        </motion.div>
+      </motion.div>
+    </div>
+  );
+}
+
+function DashCard({
+  href, icon: Icon, title, badge, children,
+}: {
+  href: string;
+  icon: typeof Wallet;
+  title: string;
+  badge?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link href={href}>
+      <motion.div
+        whileTap={{ scale: 0.985 }}
+        className="rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)] p-4"
+      >
+        <div className="flex items-center gap-2.5 mb-1">
+          <span className="grid h-8 w-8 place-items-center rounded-[10px] bg-[var(--accent-12)] text-[var(--accent)]"><Icon size={17} /></span>
+          <span className="text-[15px] font-semibold flex-1">{title}</span>
+          {badge && <span className={cn('num text-[12px] font-bold rounded-full bg-[var(--accent-12)] text-[var(--accent)] px-2 py-0.5')}>{badge}</span>}
+          <ChevronRight size={18} className="text-[var(--text-subtle)]" />
+        </div>
+        {children}
+      </motion.div>
+    </Link>
+  );
+}

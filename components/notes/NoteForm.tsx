@@ -1,0 +1,75 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { Pin, Trash2 } from 'lucide-react';
+import { Sheet } from '@/components/ui/Sheet';
+import { Input, Textarea } from '@/components/ui/Field';
+import { Button } from '@/components/ui/Button';
+import { useOverlays } from '@/components/ui/Overlays';
+import { useNoteMutations } from '@/hooks/useNotes';
+import { cn } from '@/lib/utils';
+import type { Note } from '@/lib/types';
+
+export function NoteForm({ open, onClose, note }: { open: boolean; onClose: () => void; note?: Note | null }) {
+  const { add, update, remove } = useNoteMutations();
+  const { toast, confirm } = useOverlays();
+  const editing = !!note;
+
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+  const [pinned, setPinned] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    setTitle(note?.title ?? '');
+    setBody(note?.body ?? '');
+    setPinned(note?.pinned ?? false);
+  }, [open, note]);
+
+  const busy = add.isPending || update.isPending;
+  const canSave = !!title.trim() || !!body.trim();
+
+  async function submit() {
+    if (!canSave) { onClose(); return; }
+    try {
+      if (editing && note) {
+        await update.mutateAsync({ id: note.id, patch: { title: title.trim() || 'Без названия', body: body || null, pinned } });
+      } else {
+        const id = await add.mutateAsync({ title: title.trim() || 'Без названия', body: body || null });
+        if (pinned) await update.mutateAsync({ id, patch: { pinned: true } });
+      }
+      onClose();
+    } catch { toast('Не удалось сохранить', 'error'); }
+  }
+
+  async function del() {
+    if (!note) return;
+    const ok = await confirm({ title: 'Удалить заметку?', danger: true, confirmLabel: 'Удалить' });
+    if (ok) { await remove.mutateAsync(note.id); onClose(); }
+  }
+
+  return (
+    <Sheet
+      open={open} onClose={onClose}
+      title={editing ? 'Заметка' : 'Новая заметка'}
+      footer={<Button full size="lg" disabled={busy} onClick={submit}>Сохранить</Button>}
+    >
+      <div className="flex items-center gap-2 mb-3">
+        <Input autoFocus placeholder="Заголовок" value={title} onChange={(e) => setTitle(e.target.value)} className="text-[17px] font-semibold" />
+        <button
+          onClick={() => setPinned((p) => !p)}
+          className={cn('grid h-11 w-11 shrink-0 place-items-center rounded-[14px] border transition-colors', pinned ? 'bg-[var(--accent-12)] text-[var(--accent)] border-[var(--accent-30)]' : 'text-[var(--text-muted)] border-[var(--border)]')}
+          aria-label="Закрепить"
+        >
+          <Pin size={18} className={pinned ? 'fill-current' : ''} />
+        </button>
+      </div>
+      <Textarea rows={8} placeholder="Текст заметки…" value={body} onChange={(e) => setBody(e.target.value)} />
+      {editing && (
+        <button onClick={del} className="mt-3 flex items-center gap-2 text-[14px] text-[var(--negative)] font-medium">
+          <Trash2 size={16} /> Удалить
+        </button>
+      )}
+    </Sheet>
+  );
+}

@@ -1,0 +1,37 @@
+'use client';
+
+import { motion } from 'framer-motion';
+import { haptics } from '@/lib/haptics';
+import { spring } from '@/lib/motion';
+import { cn } from '@/lib/utils';
+
+export function Switch({
+  checked,
+  onChange,
+  label,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  label?: string;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label={label}
+      onClick={() => { haptics.soft(); onChange(!checked); }}
+      className={cn(
+        'relative h-[30px] w-[50px] rounded-full transition-colors shrink-0',
+        checked ? 'bg-[var(--accent)]' : 'bg-[var(--border-strong)]',
+      )}
+    >
+      <motion.span
+        layout
+        transition={spring.snappy}
+        className="absolute top-[3px] h-6 w-6 rounded-full bg-white shadow-[0_2px_6px_rgba(0,0,0,0.3)]"
+        style={{ left: checked ? 23 : 3 }}
+      />
+    </button>
+  );
+}
