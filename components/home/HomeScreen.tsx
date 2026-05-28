@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { ChevronRight, Wallet, Dumbbell, ListChecks, Check as CheckIcon } from 'lucide-react';
 import { AppHeader } from '@/components/ui/AppHeader';
 import { Check } from '@/components/ui/Check';
+import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { listContainer, listItem } from '@/lib/motion';
 import { cn, fmtAmount, currencySymbol, todayISO, isPast, WEEKDAYS_FULL } from '@/lib/utils';
 import { useTasks, useTaskMutations } from '@/hooks/useTodo';
@@ -89,7 +90,7 @@ export function HomeScreen() {
             <div className="flex items-end justify-between pt-1">
               <div>
                 <p className="text-[12px] text-[var(--text-subtle)]">На счетах</p>
-                <p className="num text-[24px] font-bold leading-tight">{fmtAmount(total)} <span className="text-[var(--text-muted)] text-[16px]">{currencySymbol(currency)}</span></p>
+                <p className="num text-[24px] font-bold leading-tight"><AnimatedNumber value={total} format={fmtAmount} /> <span className="text-[var(--text-muted)] text-[16px]">{currencySymbol(currency)}</span></p>
               </div>
               <div className="text-right">
                 <p className="text-[12px] text-[var(--text-subtle)]">Траты за месяц</p>

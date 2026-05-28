@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/Button';
 import { ProgressBar } from '@/components/ui/Progress';
 import { Sheet } from '@/components/ui/Sheet';
 import { AmountInput } from '@/components/ui/Field';
+import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { listContainer, listItem } from '@/lib/motion';
 import { cn, fmtMoney, fmtAmount, fmtDateLabel, currencySymbol, todayISO } from '@/lib/utils';
 import { categoryIcon } from '@/lib/categories';
@@ -76,7 +77,7 @@ export function FinanceScreen() {
       >
         <div aria-hidden className="absolute -right-8 -top-10 h-40 w-40 rounded-full blur-[60px] opacity-25" style={{ backgroundImage: 'var(--accent-grad)' }} />
         <p className="relative text-[13px] text-[var(--text-muted)] mb-1">Всего на счетах</p>
-        <p className="relative num text-[36px] font-bold tracking-tight">{fmtAmount(total)} <span className="text-[var(--text-muted)] text-[24px]">{currencySymbol(currency)}</span></p>
+        <p className="relative num text-[36px] font-bold tracking-tight"><AnimatedNumber value={total} format={fmtAmount} /> <span className="text-[var(--text-muted)] text-[24px]">{currencySymbol(currency)}</span></p>
         <div className="relative mt-4 flex gap-5">
           <div className="flex items-center gap-2">
             <span className="grid h-8 w-8 place-items-center rounded-full bg-[var(--positive-16)] text-[var(--positive)]"><ArrowDownLeft size={16} /></span>

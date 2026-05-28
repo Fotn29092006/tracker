@@ -7,6 +7,7 @@ import { AppHeader } from '@/components/ui/AppHeader';
 import { Fab } from '@/components/ui/Fab';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { listContainer, listItem } from '@/lib/motion';
 import { fmtDateLabel } from '@/lib/utils';
 import { useNotes } from '@/hooks/useNotes';
@@ -24,7 +25,13 @@ export function NotesScreen() {
     <div>
       <AppHeader title="Заметки" subtitle={notes.length ? `${notes.length}` : undefined} />
 
-      {!isLoading && notes.length === 0 ? (
+      {isLoading && notes.length === 0 ? (
+        <div className="grid grid-cols-2 gap-2.5">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="rounded-[var(--r-md)]" style={{ height: 96 + (i % 3) * 28 }} />
+          ))}
+        </div>
+      ) : !isLoading && notes.length === 0 ? (
         <EmptyState
           icon={StickyNote}
           title="Заметок пока нет"

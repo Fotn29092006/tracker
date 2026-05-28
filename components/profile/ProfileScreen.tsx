@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Pencil, LogOut, Scale, Trash2, X } from 'lucide-react';
 import { AppHeader } from '@/components/ui/AppHeader';
 import { Portal } from '@/components/ui/Portal';
+import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Sheet } from '@/components/ui/Sheet';
 import { Field, Input } from '@/components/ui/Field';
 import { Button } from '@/components/ui/Button';
@@ -21,6 +22,8 @@ import { SecuritySection } from './SecuritySection';
 import { createClient } from '@/lib/supabase/client';
 import { fmtDateLabel } from '@/lib/utils';
 import type { ThemeMode, BodyEntry } from '@/lib/types';
+
+const kgFormat = (n: number) => (Math.round(n * 10) / 10).toString();
 
 export function ProfileScreen() {
   const router = useRouter();
@@ -97,7 +100,7 @@ export function ProfileScreen() {
             <p className="text-[13px] text-[var(--text-muted)] mb-1">Текущий вес</p>
             {latest?.weight_kg != null ? (
               <p className="num text-[34px] font-bold leading-none">
-                {latest.weight_kg}<span className="text-[var(--text-muted)] text-[20px]"> кг</span>
+                <AnimatedNumber value={latest.weight_kg ?? 0} format={kgFormat} /><span className="text-[var(--text-muted)] text-[20px]"> кг</span>
               </p>
             ) : (
               <p className="text-[18px] text-[var(--text-subtle)]">—</p>

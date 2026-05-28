@@ -9,6 +9,7 @@ import { Fab } from '@/components/ui/Fab';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
 import { ProgressRing } from '@/components/ui/Progress';
+import { SkeletonList } from '@/components/ui/Skeleton';
 import { listContainer } from '@/lib/motion';
 import { cn, fmtDateLabel, isPast, todayISO } from '@/lib/utils';
 import { useTasks, useGoals, useTaskMutations } from '@/hooks/useTodo';
@@ -81,7 +82,9 @@ export function TasksScreen() {
       <AnimatePresence mode="wait">
         {tab === 'tasks' ? (
           <motion.div key="tasks" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            {!isLoading && activeCount === 0 && groups.done.length === 0 ? (
+            {isLoading && tasks.length === 0 ? (
+              <SkeletonList rows={5} />
+            ) : !isLoading && activeCount === 0 && groups.done.length === 0 ? (
               <EmptyState
                 icon={ListChecks}
                 title="Задач пока нет"

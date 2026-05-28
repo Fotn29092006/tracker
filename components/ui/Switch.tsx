@@ -27,10 +27,9 @@ export function Switch({
       )}
     >
       <motion.span
-        layout
+        animate={{ x: checked ? 20 : 0 }}
         transition={spring.snappy}
-        className="absolute top-[3px] h-6 w-6 rounded-full bg-white shadow-[0_2px_6px_rgba(0,0,0,0.3)]"
-        style={{ left: checked ? 23 : 3 }}
+        className="absolute top-[3px] left-[3px] h-6 w-6 rounded-full bg-white shadow-[0_2px_6px_rgba(0,0,0,0.3)]"
       />
     </button>
   );
