@@ -7,10 +7,13 @@ import { User } from 'lucide-react';
 import { NAV_ITEMS, isActive } from './navItems';
 import { spring } from '@/lib/motion';
 import { cn } from '@/lib/utils';
+import { useProfile } from '@/hooks/useProfile';
 
 // Desktop left rail. Profile lives in the footer.
-export function Sidebar({ name }: { name: string }) {
+export function Sidebar() {
   const pathname = usePathname();
+  const { data: profile } = useProfile();
+  const name = profile?.name || 'Профиль';
   const items = [...NAV_ITEMS, { href: '/profile', label: 'Профиль', icon: User }];
   return (
     <aside className="hidden lg:flex flex-col w-[248px] shrink-0 border-r border-[var(--border)] bg-[var(--bg-elev)] h-dvh sticky top-0 px-3 py-5">

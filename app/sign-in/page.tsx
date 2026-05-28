@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { isSupabaseConfigured } from '@/lib/supabase/config';
 import { Input } from '@/components/ui/Field';
 import { Button } from '@/components/ui/Button';
 import { ease } from '@/lib/motion';
@@ -21,6 +22,14 @@ export default function SignInPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
+
+  // Already signed in → go straight to the app (no middleware does this now).
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session) { router.replace('/'); }
+    });
+  }, [router, supabase]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
