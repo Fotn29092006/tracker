@@ -1,11 +1,15 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { isSupabaseConfigured } from './config';
 
 const URL = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
 const KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder_anon_key';
 
 export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
+
+  // Not wired up yet → don't gate; let the UI render so it can be previewed.
+  if (!isSupabaseConfigured) return response;
 
   const supabase = createServerClient(URL, KEY, {
     cookies: {
