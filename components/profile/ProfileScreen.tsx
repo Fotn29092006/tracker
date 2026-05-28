@@ -4,9 +4,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { createPortal } from 'react-dom';
-import { Pencil, Plus, LogOut, Scale, Trash2, X } from 'lucide-react';
+import { Pencil, LogOut, Scale, Trash2, X } from 'lucide-react';
 import { AppHeader } from '@/components/ui/AppHeader';
+import { Portal } from '@/components/ui/Portal';
 import { Sheet } from '@/components/ui/Sheet';
 import { Field, Input } from '@/components/ui/Field';
 import { Button } from '@/components/ui/Button';
@@ -204,8 +204,8 @@ function ProfileEditForm({
 }
 
 function Lightbox({ url, onClose }: { url: string | null; onClose: () => void }) {
-  if (typeof document === 'undefined') return null;
-  return createPortal(
+  return (
+    <Portal>
     <AnimatePresence>
       {url && (
         <motion.div
@@ -221,7 +221,7 @@ function Lightbox({ url, onClose }: { url: string | null; onClose: () => void })
           />
         </motion.div>
       )}
-    </AnimatePresence>,
-    document.body,
+    </AnimatePresence>
+    </Portal>
   );
 }

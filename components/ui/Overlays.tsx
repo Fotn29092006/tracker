@@ -2,10 +2,10 @@
 
 import { createContext, useCallback, useContext, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { createPortal } from 'react-dom';
 import { CheckCircle2, AlertTriangle, Info } from 'lucide-react';
 import { spring } from '@/lib/motion';
 import { Button } from './Button';
+import { Portal } from './Portal';
 
 // ── Toasts + Confirm, exposed imperatively via useOverlays() ──
 
@@ -53,12 +53,10 @@ export function OverlaysProvider({ children }: { children: React.ReactNode }) {
     setConfirmState(null);
   };
 
-  const portalTarget = typeof document !== 'undefined' ? document.body : null;
-
   return (
     <OverlaysCtx.Provider value={{ toast, confirm }}>
       {children}
-      {portalTarget && createPortal(
+      <Portal>
         <>
           {/* Toasts */}
           <div className="fixed top-[max(env(safe-area-inset-top),12px)] left-0 right-0 z-[60] flex flex-col items-center gap-2 px-4 pointer-events-none">
@@ -116,9 +114,8 @@ export function OverlaysProvider({ children }: { children: React.ReactNode }) {
               </div>
             )}
           </AnimatePresence>
-        </>,
-        portalTarget,
-      )}
+        </>
+      </Portal>
     </OverlaysCtx.Provider>
   );
 }

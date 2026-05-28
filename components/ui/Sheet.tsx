@@ -2,11 +2,11 @@
 
 import { AnimatePresence, motion, type PanInfo } from 'framer-motion';
 import { useEffect } from 'react';
-import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { spring } from '@/lib/motion';
 import { haptics } from '@/lib/haptics';
+import { Portal } from './Portal';
 
 type Props = {
   open: boolean;
@@ -34,8 +34,6 @@ export function Sheet({ open, onClose, title, children, footer }: Props) {
     return () => window.removeEventListener('keydown', onKey);
   }, [open, onClose]);
 
-  if (typeof document === 'undefined') return null;
-
   const onDragEnd = (_: unknown, info: PanInfo) => {
     if (info.offset.y > 120 || info.velocity.y > 700) {
       haptics.soft();
@@ -43,7 +41,8 @@ export function Sheet({ open, onClose, title, children, footer }: Props) {
     }
   };
 
-  return createPortal(
+  return (
+    <Portal>
     <AnimatePresence>
       {open && (
         <div className="fixed inset-0 z-50 flex flex-col justify-end">
@@ -102,7 +101,7 @@ export function Sheet({ open, onClose, title, children, footer }: Props) {
           </motion.div>
         </div>
       )}
-    </AnimatePresence>,
-    document.body,
+    </AnimatePresence>
+    </Portal>
   );
 }

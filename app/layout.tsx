@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import Script from 'next/script';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
 import { Providers } from '@/components/providers';
@@ -36,10 +37,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${GeistSans.variable} ${GeistMono.variable}`}
       suppressHydrationWarning
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      </head>
       <body suppressHydrationWarning>
+        <Script id="theme-init" strategy="beforeInteractive">
+          {themeScript}
+        </Script>
         <Providers>
           <ThemeProvider>{children}</ThemeProvider>
         </Providers>
