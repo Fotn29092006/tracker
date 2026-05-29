@@ -43,6 +43,14 @@ export function HomeScreen() {
   );
   const activeTotal = tasks.filter((t) => !t.done_at && (t.due_date === today || (t.due_date && isPast(t.due_date)))).length;
 
+  // Today's completion: done-today vs everything on today's plate.
+  const doneTodayCount = useMemo(
+    () => tasks.filter((t) => t.done_at && t.done_at.slice(0, 10) === today).length,
+    [tasks, today],
+  );
+  const totalToday = activeTotal + doneTodayCount;
+  const taskRatio = totalToday ? doneTodayCount / totalToday : 0;
+
   const monthSpend = useMemo(() => {
     const ym = today.slice(0, 7);
     return transactions.filter((t) => t.kind === 'expense' && t.occurred_on.startsWith(ym)).reduce((s, t) => s + t.amount, 0);
@@ -103,13 +111,30 @@ export function HomeScreen() {
                 <CheckIcon size={16} className="text-[var(--positive)]" /> На сегодня всё чисто
               </div>
             ) : (
-              <div className="space-y-2 pt-1">
-                {todayTasks.map((t) => (
-                  <div key={t.id} className="flex items-center gap-2.5">
-                    <Check size={22} checked={!!t.done_at} onChange={() => toggle.mutate(t)} />
-                    <span className="text-[14px] truncate">{t.title}</span>
+              <div className="pt-1.5">
+                <div className="mb-2.5">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-[12px] text-[var(--text-subtle)]">Прогресс дня</span>
+                    <span className="num text-[12px] font-semibold text-[var(--text-muted)]">{doneTodayCount}/{totalToday}</span>
                   </div>
-                ))}
+                  <div className="h-1.5 rounded-full bg-[var(--surface-alt)] overflow-hidden">
+                    <motion.div
+                      className="h-full rounded-full"
+                      style={{ backgroundImage: 'var(--accent-grad)' }}
+                      initial={{ width: 0 }}
+                      animate={{ width: `${Math.round(taskRatio * 100)}%` }}
+                      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  {todayTasks.map((t) => (
+                    <div key={t.id} className="flex items-center gap-2.5">
+                      <Check size={22} checked={!!t.done_at} onChange={() => toggle.mutate(t)} />
+                      <span className="text-[14px] truncate">{t.title}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </DashCard>

@@ -20,7 +20,8 @@
 // v17: haptics reality check — iOS 26.5 patched the programmatic switch trick,
 // so Switch is now a real native <input switch> under our skin (real-tap haptic
 // is the only method left); dropped the dead programmatic hack from haptics.ts.
-const CACHE = 'tracker-shell-v17';
+// v18: UI/UX P3 step 2 — "Прогресс дня" bar on the Tasks dashboard card.
+const CACHE = 'tracker-shell-v18';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
