@@ -8,6 +8,7 @@ import { AppHeader } from '@/components/ui/AppHeader';
 import { Check } from '@/components/ui/Check';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { Sparkline } from '@/components/ui/Sparkline';
 import { listContainer, listItem } from '@/lib/motion';
 import { cn, fmtAmount, currencySymbol, todayISO, isPast, WEEKDAYS_FULL } from '@/lib/utils';
 import { useTasks, useTaskMutations } from '@/hooks/useTodo';
@@ -45,6 +46,19 @@ export function HomeScreen() {
   const monthSpend = useMemo(() => {
     const ym = today.slice(0, 7);
     return transactions.filter((t) => t.kind === 'expense' && t.occurred_on.startsWith(ym)).reduce((s, t) => s + t.amount, 0);
+  }, [transactions, today]);
+
+  // Last-14-day daily expense series for the Finance card sparkline.
+  const spendSeries = useMemo(() => {
+    const days = 14;
+    const buckets = new Array<number>(days).fill(0);
+    const t0 = new Date(`${today}T00:00:00`).getTime();
+    for (const tx of transactions) {
+      if (tx.kind !== 'expense') continue;
+      const diff = Math.round((t0 - new Date(`${tx.occurred_on}T00:00:00`).getTime()) / 86400000);
+      if (diff >= 0 && diff < days) buckets[days - 1 - diff] += tx.amount;
+    }
+    return buckets;
   }, [transactions, today]);
 
   const todayPlan = plan.filter((p) => p.day_of_week === todayDow);
@@ -114,6 +128,9 @@ export function HomeScreen() {
                 <p className="num text-[16px] font-semibold text-[var(--negative)]">−{fmtAmount(monthSpend)}</p>
               </div>
             </div>
+            {spendSeries.some((v) => v > 0) && (
+              <div className="mt-3"><Sparkline points={spendSeries} height={34} /></div>
+            )}
           </DashCard>
         </motion.div>
 

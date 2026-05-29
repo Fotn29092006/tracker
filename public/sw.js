@@ -15,7 +15,9 @@
 // nav aria-current, sheet dialog semantics + focus trap, label contrast AA).
 // v15: UI/UX P2 — haptics that actually fire on iOS (hidden <input switch>
 // trick; vibrate is a no-op there), swipe-to-arm tick, destructive warning buzz.
-const CACHE = 'tracker-shell-v15';
+// v16: UI/UX P3 step 1 — responsive Sparkline + 14-day spend trend on the
+// Finance dashboard card.
+const CACHE = 'tracker-shell-v16';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
