@@ -3,7 +3,7 @@
 // Bump CACHE on a breaking shell/layout change to force installed PWAs to drop
 // stale cached assets (activate wipes any cache name != CACHE). v2: app-shell
 // layout rewrite (in-flow bottom nav).
-const CACHE = 'tracker-shell-v2';
+const CACHE = 'tracker-shell-v3';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

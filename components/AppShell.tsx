@@ -17,7 +17,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <AuthGuard>
         <LockGate>
           <ReminderWatcher />
-          <div className="flex h-dvh overflow-hidden bg-[var(--bg)]">
+          <div className="fixed inset-0 flex overflow-hidden bg-[var(--bg)]">
             <Sidebar />
             <div className="flex-1 min-w-0 flex flex-col">
               <main
