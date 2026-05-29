@@ -7,6 +7,7 @@ import { ChevronRight, Wallet, Dumbbell, ListChecks, Check as CheckIcon } from '
 import { AppHeader } from '@/components/ui/AppHeader';
 import { Check } from '@/components/ui/Check';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { listContainer, listItem } from '@/lib/motion';
 import { cn, fmtAmount, currencySymbol, todayISO, isPast, WEEKDAYS_FULL } from '@/lib/utils';
 import { useTasks, useTaskMutations } from '@/hooks/useTodo';
@@ -24,12 +25,12 @@ function greeting(): string {
 
 export function HomeScreen() {
   const { data: profile } = useProfile();
-  const { data: tasks = [] } = useTasks();
+  const { data: tasks = [], isLoading: tasksLoading } = useTasks();
   const { toggle } = useTaskMutations();
-  const { data: accounts = [], total } = useAccounts();
+  const { data: accounts = [], total, isLoading: accLoading } = useAccounts();
   const { data: transactions = [] } = useTransactions();
   const { data: plan = [] } = usePlan();
-  const { data: sessions = [] } = useSessions();
+  const { data: sessions = [], isLoading: sessionsLoading } = useSessions();
 
   const today = todayISO();
   const todayDow = new Date().getDay();
@@ -50,6 +51,22 @@ export function HomeScreen() {
   const doneToday = sessions.some((s) => s.performed_on === today);
 
   const name = profile?.name?.split(' ')[0] || '';
+
+  const firstLoad = (tasksLoading || accLoading || sessionsLoading)
+    && tasks.length === 0 && accounts.length === 0 && sessions.length === 0;
+
+  if (firstLoad) {
+    return (
+      <div>
+        <AppHeader title={greeting()} subtitle={name || undefined} />
+        <div className="space-y-3.5">
+          <Skeleton className="rounded-[var(--r-lg)]" style={{ height: 132 }} />
+          <Skeleton className="rounded-[var(--r-lg)]" style={{ height: 96 }} />
+          <Skeleton className="rounded-[var(--r-lg)]" style={{ height: 84 }} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>

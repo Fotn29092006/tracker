@@ -7,6 +7,8 @@ import { AppHeader } from '@/components/ui/AppHeader';
 import { Segmented } from '@/components/ui/Segmented';
 import { Button } from '@/components/ui/Button';
 import { ProgressBar } from '@/components/ui/Progress';
+import { TabPanel } from '@/components/ui/TabPanel';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { useOverlays } from '@/components/ui/Overlays';
 import { haptics } from '@/lib/haptics';
 import { todayISO, addDaysISO, WEEKDAYS_FULL, WEEK_ORDER, fmtDateLabel } from '@/lib/utils';
@@ -22,9 +24,9 @@ import type { Exercise, MuscleId, PlanExercise } from '@/lib/types';
 type Tab = 'overview' | 'plan';
 
 export function WorkoutScreen() {
-  const { data: exercises = [] } = useExercises();
-  const { data: plan = [] } = usePlan();
-  const { data: sessions = [] } = useSessions();
+  const { data: exercises = [], isLoading: exLoading } = useExercises();
+  const { data: plan = [], isLoading: planLoading } = usePlan();
+  const { data: sessions = [], isLoading: sessionsLoading } = useSessions();
   const volume = useMuscleVolume(7);
   const { addPlanExercise, updatePlanExercise, removePlanExercise, completeDay, removeSession } = useWorkoutMutations();
   const { toast, confirm } = useOverlays();
@@ -69,6 +71,20 @@ export function WorkoutScreen() {
     addPlanExercise.mutate({ day_of_week: pickerDay, exercise_id: ex.id, sets: 3, reps: 10, position: count });
   }
 
+  const firstLoad = (exLoading || planLoading || sessionsLoading)
+    && exercises.length === 0 && plan.length === 0 && sessions.length === 0;
+
+  if (firstLoad) {
+    return (
+      <div>
+        <AppHeader title="Тренировки" />
+        <Skeleton className="mb-5" style={{ height: 44 }} />
+        <Skeleton className="rounded-[var(--r-xl)] mb-4" style={{ height: 180 }} />
+        <Skeleton className="rounded-[var(--r-xl)]" style={{ height: 420 }} />
+      </div>
+    );
+  }
+
   return (
     <div>
       <AppHeader title="Тренировки" subtitle={`${weekCount} за неделю`} right={
@@ -82,9 +98,9 @@ export function WorkoutScreen() {
         options={[{ value: 'overview', label: 'Обзор' }, { value: 'plan', label: 'План' }]}
       />
 
-      <AnimatePresence mode="wait">
+      <TabPanel key={tab} className="space-y-4">
         {tab === 'overview' ? (
-          <motion.div key="ov" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
+          <>
             {/* Today */}
             <div className="rounded-[var(--r-xl)] border border-[var(--border)] bg-[var(--surface)] p-5">
               <div className="flex items-center justify-between mb-1">
@@ -166,9 +182,9 @@ export function WorkoutScreen() {
                 </div>
               </div>
             )}
-          </motion.div>
+          </>
         ) : (
-          <motion.div key="plan" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
+          <>
             {WEEK_ORDER.map((dow) => {
               const items = plan.filter((p) => p.day_of_week === dow);
               return (
@@ -184,9 +200,9 @@ export function WorkoutScreen() {
                 />
               );
             })}
-          </motion.div>
+          </>
         )}
-      </AnimatePresence>
+      </TabPanel>
 
       <ExercisePicker open={pickerDay !== null} onClose={() => setPickerDay(null)} onPick={onPick} />
       <BodyEntryForm open={bodyForm} onClose={() => setBodyForm(false)} />
@@ -241,12 +257,12 @@ function PlanDay({
 function Stepper({ value, min, onChange, label }: { value: number; min: number; onChange: (v: number) => void; label: string }) {
   return (
     <div className="flex items-center gap-1.5">
-      <button onClick={() => { haptics.soft(); onChange(Math.max(min, value - 1)); }} className="grid h-6 w-6 place-items-center rounded-full bg-[var(--surface-alt)] text-[var(--text-muted)]" aria-label={`${label} меньше`}>
-        <Minus size={13} />
+      <button onClick={() => { haptics.soft(); onChange(Math.max(min, value - 1)); }} className="grid h-7 w-7 place-items-center rounded-full bg-[var(--surface-alt)] text-[var(--text-muted)] active:bg-[var(--surface-raised)]" aria-label={`${label} меньше`}>
+        <Minus size={14} />
       </button>
       <span className="num text-[14px] font-semibold w-5 text-center tabular-nums">{value}</span>
-      <button onClick={() => { haptics.soft(); onChange(value + 1); }} className="grid h-6 w-6 place-items-center rounded-full bg-[var(--surface-alt)] text-[var(--text-muted)]" aria-label={`${label} больше`}>
-        <Plus size={13} />
+      <button onClick={() => { haptics.soft(); onChange(value + 1); }} className="grid h-7 w-7 place-items-center rounded-full bg-[var(--surface-alt)] text-[var(--text-muted)] active:bg-[var(--surface-raised)]" aria-label={`${label} больше`}>
+        <Plus size={14} />
       </button>
     </div>
   );

@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   Plus, Pencil, ArrowDownLeft, ArrowUpRight, Wallet, HandCoins, PiggyBank, Check,
 } from 'lucide-react';
@@ -14,6 +14,8 @@ import { ProgressBar } from '@/components/ui/Progress';
 import { Sheet } from '@/components/ui/Sheet';
 import { AmountInput } from '@/components/ui/Field';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
+import { TabPanel } from '@/components/ui/TabPanel';
+import { Skeleton, SkeletonList } from '@/components/ui/Skeleton';
 import { listContainer, listItem } from '@/lib/motion';
 import { cn, fmtMoney, fmtAmount, fmtDateLabel, currencySymbol, todayISO } from '@/lib/utils';
 import { categoryIcon } from '@/lib/categories';
@@ -29,7 +31,7 @@ import type { Account, AccountWithBalance, Debt, SavingsGoal, Transaction } from
 type Tab = 'ops' | 'debts' | 'savings';
 
 export function FinanceScreen() {
-  const { data: accounts = [], total } = useAccounts();
+  const { data: accounts = [], total, isLoading: accLoading } = useAccounts();
   const { data: transactions = [] } = useTransactions();
   const { data: debts = [] } = useDebts();
   const { data: savings = [] } = useSavingsGoals();
@@ -64,6 +66,21 @@ export function FinanceScreen() {
     if (tab === 'ops') { setEditTx(null); setTxForm(true); }
     else if (tab === 'debts') { setEditDebt(null); setDebtForm(true); }
     else { setEditSaving(null); setSavingForm(true); }
+  }
+
+  if (accLoading && accounts.length === 0 && transactions.length === 0) {
+    return (
+      <div>
+        <AppHeader title="Финансы" />
+        <Skeleton className="rounded-[var(--r-xl)] mb-4" style={{ height: 150 }} />
+        <div className="flex gap-2.5 mb-5">
+          <Skeleton className="rounded-[var(--r-md)]" style={{ height: 84, width: 150 }} />
+          <Skeleton className="rounded-[var(--r-md)]" style={{ height: 84, width: 150 }} />
+        </div>
+        <Skeleton className="mb-5" style={{ height: 44 }} />
+        <SkeletonList rows={4} height={64} />
+      </div>
+    );
   }
 
   return (
@@ -124,24 +141,18 @@ export function FinanceScreen() {
         options={[{ value: 'ops', label: 'Операции' }, { value: 'debts', label: 'Долги' }, { value: 'savings', label: 'Копилки' }]}
       />
 
-      <AnimatePresence mode="wait">
+      <TabPanel key={tab}>
         {tab === 'ops' && (
-          <motion.div key="ops" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <Operations transactions={transactions} accName={accName} onEdit={(t) => { setEditTx(t); setTxForm(true); }} onAdd={() => { setEditTx(null); setTxForm(true); }} />
-          </motion.div>
+          <Operations transactions={transactions} accName={accName} onEdit={(t) => { setEditTx(t); setTxForm(true); }} onAdd={() => { setEditTx(null); setTxForm(true); }} />
         )}
         {tab === 'debts' && (
-          <motion.div key="debts" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <Debts debts={debts} currency={currency} onEdit={(d) => { setEditDebt(d); setDebtForm(true); }} onAdd={() => { setEditDebt(null); setDebtForm(true); }}
-              onSettle={(d) => updateDebt.mutate({ id: d.id, patch: { settled_at: d.settled_at ? null : new Date().toISOString() } })} />
-          </motion.div>
+          <Debts debts={debts} currency={currency} onEdit={(d) => { setEditDebt(d); setDebtForm(true); }} onAdd={() => { setEditDebt(null); setDebtForm(true); }}
+            onSettle={(d) => updateDebt.mutate({ id: d.id, patch: { settled_at: d.settled_at ? null : new Date().toISOString() } })} />
         )}
         {tab === 'savings' && (
-          <motion.div key="savings" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <Savings goals={savings} currency={currency} onEdit={(g) => { setEditSaving(g); setSavingForm(true); }} onAdd={() => { setEditSaving(null); setSavingForm(true); }} onContribute={setContribute} />
-          </motion.div>
+          <Savings goals={savings} currency={currency} onEdit={(g) => { setEditSaving(g); setSavingForm(true); }} onAdd={() => { setEditSaving(null); setSavingForm(true); }} onContribute={setContribute} />
         )}
-      </AnimatePresence>
+      </TabPanel>
 
       <Fab onClick={openFab} />
 

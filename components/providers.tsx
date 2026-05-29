@@ -2,6 +2,7 @@
 
 import { QueryClient, onlineManager } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { MotionConfig } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { queryPersister } from '@/lib/queryPersister';
 
@@ -49,7 +50,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         },
       }}
     >
-      {children}
+      <MotionConfig reducedMotion="user">{children}</MotionConfig>
     </PersistQueryClientProvider>
   );
 }

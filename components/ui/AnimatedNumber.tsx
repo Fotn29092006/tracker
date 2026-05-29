@@ -18,7 +18,11 @@ export function AnimatedNumber({
   className?: string;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const prev = useRef(0);
+  // Seed with the initial value so the first render (incl. cached navigation)
+  // shows it instantly — we only animate on *changes*, e.g. 0→real on first
+  // data load, or when the balance updates while the screen is open. This
+  // avoids a gratuitous count-up every time you revisit a screen.
+  const prev = useRef(value);
 
   useEffect(() => {
     const node = ref.current;

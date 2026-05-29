@@ -10,6 +10,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
 import { ProgressRing } from '@/components/ui/Progress';
 import { SkeletonList } from '@/components/ui/Skeleton';
+import { TabPanel } from '@/components/ui/TabPanel';
 import { listContainer } from '@/lib/motion';
 import { cn, fmtDateLabel, isPast, todayISO } from '@/lib/utils';
 import { useTasks, useGoals, useTaskMutations } from '@/hooks/useTodo';
@@ -79,9 +80,9 @@ export function TasksScreen() {
         options={[{ value: 'tasks', label: 'Задачи' }, { value: 'goals', label: 'Цели' }]}
       />
 
-      <AnimatePresence mode="wait">
+      <TabPanel key={tab}>
         {tab === 'tasks' ? (
-          <motion.div key="tasks" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <div>
             {isLoading && tasks.length === 0 ? (
               <SkeletonList rows={5} />
             ) : !isLoading && activeCount === 0 && groups.done.length === 0 ? (
@@ -125,9 +126,9 @@ export function TasksScreen() {
                 )}
               </motion.div>
             )}
-          </motion.div>
+          </div>
         ) : (
-          <motion.div key="goals" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <div>
             {goals.length === 0 ? (
               <EmptyState
                 icon={Target}
@@ -142,9 +143,9 @@ export function TasksScreen() {
                 ))}
               </motion.div>
             )}
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
+      </TabPanel>
 
       <Fab onClick={() => {
         if (tab === 'tasks') { setEditTask(null); setTaskForm(true); }
