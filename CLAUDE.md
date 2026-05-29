@@ -32,6 +32,16 @@ Cut (don't reintroduce): habits, streaks, books, subscriptions, net-worth,
 month/year reports, wrapped, pomodoro, achievements, AI insights, wellness.
 
 ## Conventions
+- **Layout = app-shell** (`components/AppShell.tsx`): `h-dvh` flex frame, only the
+  inner `<main id="app-scroll">` scrolls. The bottom nav (`TabBar`) is an
+  IN-FLOW flex item — **never `position: fixed`** (a fixed bar mis-paints / jumps
+  on iOS until first scroll). Don't reintroduce a fixed bottom bar.
+- **No `backdrop-filter` on fixed/overlay elements** — it janks on iOS. Use solid
+  backgrounds (tab bar, sheet/dialog overlays).
+- **Motion is calm & non-compounding:** one opacity-only screen entrance
+  (`app/(app)/template.tsx` — opacity only, NO transform, so the fixed FAB isn't
+  re-rooted to a transformed ancestor). `TabPanel` is opacity-only; list stagger
+  is a no-op (`lib/motion.ts`). Reserve motion for micro-interactions.
 - **Inserts must stamp `user_id` via `await getUserId()`** (`lib/supabase/client.ts`),
   never a React-state value — avoids the cold-start race. Reads rely on RLS.
 - Colour/spacing/radii = CSS variables in `globals.css`; theme switch = single
