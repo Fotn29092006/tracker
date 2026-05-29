@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion';
 import { CheckCircle2, AlertTriangle, Info } from 'lucide-react';
 import { spring } from '@/lib/motion';
+import { haptics } from '@/lib/haptics';
 import { Button } from './Button';
 import { Portal } from './Portal';
 
@@ -45,6 +46,7 @@ export function OverlaysProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const confirm = useCallback((opts: ConfirmOpts) => {
+    if (opts.danger) haptics.warning(); // alert the hand when a destructive dialog appears
     return new Promise<boolean>((resolve) => setConfirmState({ ...opts, resolve }));
   }, []);
 

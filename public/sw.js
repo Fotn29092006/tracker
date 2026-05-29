@@ -13,7 +13,9 @@
 // v13: removed the temporary Diagnostics block + /shelltest harness.
 // v14: UI/UX P1 — a11y + 44px tap targets (Check/Switch/IconButton hit areas,
 // nav aria-current, sheet dialog semantics + focus trap, label contrast AA).
-const CACHE = 'tracker-shell-v14';
+// v15: UI/UX P2 — haptics that actually fire on iOS (hidden <input switch>
+// trick; vibrate is a no-op there), swipe-to-arm tick, destructive warning buzz.
+const CACHE = 'tracker-shell-v15';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
