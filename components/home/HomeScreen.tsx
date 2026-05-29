@@ -119,10 +119,10 @@ export function HomeScreen() {
                   </div>
                   <div className="h-1.5 rounded-full bg-[var(--surface-alt)] overflow-hidden">
                     <motion.div
-                      className="h-full rounded-full"
+                      className="h-full w-full origin-left rounded-full"
                       style={{ backgroundImage: 'var(--accent-grad)' }}
-                      initial={{ width: 0 }}
-                      animate={{ width: `${Math.round(taskRatio * 100)}%` }}
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: taskRatio }}
                       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                     />
                   </div>

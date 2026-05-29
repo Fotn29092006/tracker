@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ListChecks, Target, ChevronDown } from 'lucide-react';
 import { AppHeader } from '@/components/ui/AppHeader';
@@ -27,6 +27,8 @@ export function TasksScreen() {
   const { data: tasks = [], isLoading } = useTasks();
   const { data: goals = [] } = useGoals();
   const { toggle, remove } = useTaskMutations();
+  const toggleMutate = toggle.mutate;
+  const removeMutate = remove.mutate;
 
   const [taskForm, setTaskForm] = useState(false);
   const [editTask, setEditTask] = useState<Task | null>(null);
@@ -56,7 +58,9 @@ export function TasksScreen() {
 
   const activeCount = groups.overdue.length + groups.today.length + groups.upcoming.length + groups.someday.length;
 
-  function openEditTask(t: Task) { setEditTask(t); setTaskForm(true); }
+  const openEditTask = useCallback((t: Task) => { setEditTask(t); setTaskForm(true); }, []);
+  const handleToggle = useCallback((t: Task) => toggleMutate(t), [toggleMutate]);
+  const handleDelete = useCallback((t: Task) => removeMutate(t.id), [removeMutate]);
   function openEditGoal(g: GoalWithProgress) { setOpenGoalId(null); setEditGoal(g); setGoalForm(true); }
 
   const openGoal = goals.find((g) => g.id === openGoalId) ?? null;
@@ -94,10 +98,10 @@ export function TasksScreen() {
               />
             ) : (
               <motion.div variants={listContainer} initial="hidden" animate="show" className="space-y-6">
-                <Section title="Просрочено" tone="negative" tasks={groups.overdue} {...{ goalTitle, toggle, remove, openEditTask }} />
-                <Section title="Сегодня" tone="accent" tasks={groups.today} {...{ goalTitle, toggle, remove, openEditTask }} />
-                <Section title="Скоро" tasks={groups.upcoming} {...{ goalTitle, toggle, remove, openEditTask }} />
-                <Section title="Когда-нибудь" tasks={groups.someday} {...{ goalTitle, toggle, remove, openEditTask }} />
+                <Section title="Просрочено" tone="negative" tasks={groups.overdue} goalTitle={goalTitle} onToggle={handleToggle} onEdit={openEditTask} onDelete={handleDelete} />
+                <Section title="Сегодня" tone="accent" tasks={groups.today} goalTitle={goalTitle} onToggle={handleToggle} onEdit={openEditTask} onDelete={handleDelete} />
+                <Section title="Скоро" tasks={groups.upcoming} goalTitle={goalTitle} onToggle={handleToggle} onEdit={openEditTask} onDelete={handleDelete} />
+                <Section title="Когда-нибудь" tasks={groups.someday} goalTitle={goalTitle} onToggle={handleToggle} onEdit={openEditTask} onDelete={handleDelete} />
 
                 {groups.done.length > 0 && (
                   <div>
@@ -117,7 +121,7 @@ export function TasksScreen() {
                           className="space-y-2 overflow-hidden"
                         >
                           {groups.done.slice(0, 30).map((t) => (
-                            <TaskRow key={t.id} task={t} goalTitle={goalTitle(t.goal_id)} onToggle={() => toggle.mutate(t)} onEdit={() => openEditTask(t)} onDelete={() => remove.mutate(t.id)} />
+                            <TaskRow key={t.id} task={t} goalTitle={goalTitle(t.goal_id)} onToggle={handleToggle} onEdit={openEditTask} onDelete={handleDelete} />
                           ))}
                         </motion.div>
                       )}
@@ -160,15 +164,15 @@ export function TasksScreen() {
 }
 
 function Section({
-  title, tone, tasks, goalTitle, toggle, remove, openEditTask,
+  title, tone, tasks, goalTitle, onToggle, onEdit, onDelete,
 }: {
   title: string;
   tone?: 'negative' | 'accent';
   tasks: Task[];
   goalTitle: (id: string | null) => string | undefined;
-  toggle: ReturnType<typeof useTaskMutations>['toggle'];
-  remove: ReturnType<typeof useTaskMutations>['remove'];
-  openEditTask: (t: Task) => void;
+  onToggle: (t: Task) => void;
+  onEdit: (t: Task) => void;
+  onDelete: (t: Task) => void;
 }) {
   if (tasks.length === 0) return null;
   return (
@@ -181,7 +185,7 @@ function Section({
       </h2>
       <div className="space-y-2">
         {tasks.map((t) => (
-          <TaskRow key={t.id} task={t} goalTitle={goalTitle(t.goal_id)} onToggle={() => toggle.mutate(t)} onEdit={() => openEditTask(t)} onDelete={() => remove.mutate(t.id)} />
+          <TaskRow key={t.id} task={t} goalTitle={goalTitle(t.goal_id)} onToggle={onToggle} onEdit={onEdit} onDelete={onDelete} />
         ))}
       </div>
     </div>

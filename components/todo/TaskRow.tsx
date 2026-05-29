@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import { motion } from 'framer-motion';
 import { Bell, CalendarDays, Target } from 'lucide-react';
 import { Check } from '@/components/ui/Check';
@@ -8,7 +9,7 @@ import { listItem } from '@/lib/motion';
 import { cn, fmtDateLabel, fmtTime, isPast, todayISO } from '@/lib/utils';
 import type { Task } from '@/lib/types';
 
-export function TaskRow({
+export const TaskRow = memo(function TaskRow({
   task,
   goalTitle,
   onToggle,
@@ -17,9 +18,9 @@ export function TaskRow({
 }: {
   task: Task;
   goalTitle?: string;
-  onToggle: () => void;
-  onEdit: () => void;
-  onDelete: () => void;
+  onToggle: (task: Task) => void;
+  onEdit: (task: Task) => void;
+  onDelete: (task: Task) => void;
 }) {
   const done = !!task.done_at;
   const overdue = !done && task.due_date && isPast(task.due_date);
@@ -27,13 +28,13 @@ export function TaskRow({
 
   return (
     <motion.div variants={listItem} layout>
-      <SwipeRow onDelete={onDelete}>
+      <SwipeRow onDelete={() => onDelete(task)}>
         <div
-          onClick={onEdit}
+          onClick={() => onEdit(task)}
           className="flex items-start gap-3 bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-3.5 cursor-pointer active:bg-[var(--surface-alt)] transition-colors"
         >
           <div className="pt-0.5">
-            <Check checked={done} onChange={onToggle} />
+            <Check checked={done} onChange={() => onToggle(task)} />
           </div>
           <div className="min-w-0 flex-1">
             <p className={cn('text-[15px] leading-snug', done ? 'line-through text-[var(--text-subtle)]' : 'text-[var(--text)]')}>
@@ -72,4 +73,4 @@ export function TaskRow({
       </SwipeRow>
     </motion.div>
   );
-}
+});
