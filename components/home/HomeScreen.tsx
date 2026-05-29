@@ -1,11 +1,13 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ChevronRight, Wallet, Dumbbell, ListChecks, Check as CheckIcon } from 'lucide-react';
 import { AppHeader } from '@/components/ui/AppHeader';
 import { NextUpCard } from '@/components/home/NextUpCard';
+import { Fab } from '@/components/ui/Fab';
+import { TaskQuickAdd } from '@/components/todo/TaskQuickAdd';
 import { Check } from '@/components/ui/Check';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -74,6 +76,7 @@ export function HomeScreen() {
   const doneToday = sessions.some((s) => s.performed_on === today);
 
   const name = profile?.name?.split(' ')[0] || '';
+  const [quickAdd, setQuickAdd] = useState(false);
 
   const firstLoad = (tasksLoading || accLoading || sessionsLoading)
     && tasks.length === 0 && accounts.length === 0 && sessions.length === 0;
@@ -179,6 +182,9 @@ export function HomeScreen() {
           </DashCard>
         </motion.div>
       </motion.div>
+
+      <Fab onClick={() => setQuickAdd(true)} />
+      <TaskQuickAdd open={quickAdd} onClose={() => setQuickAdd(false)} />
     </div>
   );
 }

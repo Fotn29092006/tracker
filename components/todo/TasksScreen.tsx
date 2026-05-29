@@ -16,6 +16,7 @@ import { cn, fmtDateLabel, isPast, todayISO } from '@/lib/utils';
 import { useTasks, useGoals, useTaskMutations } from '@/hooks/useTodo';
 import { TaskRow } from './TaskRow';
 import { TaskForm } from './TaskForm';
+import { TaskQuickAdd } from './TaskQuickAdd';
 import { GoalForm } from './GoalForm';
 import { GoalDetailSheet } from './GoalDetailSheet';
 import type { Goal, GoalWithProgress, Task } from '@/lib/types';
@@ -31,6 +32,7 @@ export function TasksScreen() {
   const removeMutate = remove.mutate;
 
   const [taskForm, setTaskForm] = useState(false);
+  const [quickAdd, setQuickAdd] = useState(false);
   const [editTask, setEditTask] = useState<Task | null>(null);
   const [goalForm, setGoalForm] = useState(false);
   const [editGoal, setEditGoal] = useState<Goal | null>(null);
@@ -152,10 +154,11 @@ export function TasksScreen() {
       </TabPanel>
 
       <Fab onClick={() => {
-        if (tab === 'tasks') { setEditTask(null); setTaskForm(true); }
+        if (tab === 'tasks') { setQuickAdd(true); }
         else { setEditGoal(null); setGoalForm(true); }
       }} />
 
+      <TaskQuickAdd open={quickAdd} onClose={() => setQuickAdd(false)} onAdvanced={() => { setEditTask(null); setTaskForm(true); }} />
       <TaskForm open={taskForm} onClose={() => setTaskForm(false)} task={editTask} goals={goals} />
       <GoalForm open={goalForm} onClose={() => setGoalForm(false)} goal={editGoal} />
       <GoalDetailSheet goal={openGoal} steps={openGoalSteps} onClose={() => setOpenGoalId(null)} onEdit={openEditGoal} />
