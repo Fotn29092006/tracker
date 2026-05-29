@@ -17,7 +17,10 @@
 // trick; vibrate is a no-op there), swipe-to-arm tick, destructive warning buzz.
 // v16: UI/UX P3 step 1 — responsive Sparkline + 14-day spend trend on the
 // Finance dashboard card.
-const CACHE = 'tracker-shell-v16';
+// v17: haptics reality check — iOS 26.5 patched the programmatic switch trick,
+// so Switch is now a real native <input switch> under our skin (real-tap haptic
+// is the only method left); dropped the dead programmatic hack from haptics.ts.
+const CACHE = 'tracker-shell-v17';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
