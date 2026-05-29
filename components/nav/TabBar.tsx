@@ -13,8 +13,17 @@ export function TabBar() {
   const pathname = usePathname();
   return (
     <nav
-      className="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-[var(--hairline)] bg-[var(--bg-90)] backdrop-blur-xl"
-      style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+      className="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-[var(--border)] bg-[var(--bg-elev)]"
+      style={{
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+        // Promote to its own GPU layer. Without this, iOS WebKit mis-paints a
+        // `position: fixed` bar on a non-scrolling page and only corrects it
+        // after the first scroll (the "jumps then settles" bug). A solid (not
+        // backdrop-blurred) background keeps it rock-solid.
+        transform: 'translateZ(0)',
+        WebkitTransform: 'translateZ(0)',
+        willChange: 'transform',
+      }}
     >
       <ul className="flex items-stretch h-[58px] max-w-[560px] mx-auto">
         {NAV_ITEMS.map((item) => {
