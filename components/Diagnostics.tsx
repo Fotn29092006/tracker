@@ -35,6 +35,8 @@ function measure(): Metrics {
       // @ts-expect-error iOS-only
       navigator.standalone === true,
     innerHeight: ih,
+    outerHeight: window.outerHeight,
+    screenY: window.screenY,
     visualVH: window.visualViewport ? Math.round(window.visualViewport.height) : null,
     'screen.height': window.screen?.height ?? null,
     '100dvh': dvh,
