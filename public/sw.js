@@ -1,6 +1,9 @@
 // Minimal service worker — offline shell, network-first navigation,
 // stale-while-revalidate for static assets (so CSS/JS updates land next load).
-const CACHE = 'tracker-shell-v1';
+// Bump CACHE on a breaking shell/layout change to force installed PWAs to drop
+// stale cached assets (activate wipes any cache name != CACHE). v2: app-shell
+// layout rewrite (in-flow bottom nav).
+const CACHE = 'tracker-shell-v2';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
