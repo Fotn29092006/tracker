@@ -25,7 +25,8 @@
 // TaskRow memoised with stable handlers (no re-render storm on the task list).
 // v20: Nocturne+ redesign batch 1 — floating-pill TabBar (6 tabs incl Profile),
 // global motion keyframes, content/FAB spacing for the floating bar.
-const CACHE = 'tracker-shell-v20';
+// v21: redesign batch 2 — NextUpCard on Home + per-digit AnimatedNumber.
+const CACHE = 'tracker-shell-v21';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

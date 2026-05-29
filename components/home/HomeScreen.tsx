@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ChevronRight, Wallet, Dumbbell, ListChecks, Check as CheckIcon } from 'lucide-react';
 import { AppHeader } from '@/components/ui/AppHeader';
+import { NextUpCard } from '@/components/home/NextUpCard';
 import { Check } from '@/components/ui/Check';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -101,6 +102,10 @@ export function HomeScreen() {
           </Link>
         }
       />
+
+      <div className="mb-3.5">
+        <NextUpCard />
+      </div>
 
       <motion.div variants={listContainer} initial="hidden" animate="show" className="space-y-3.5">
         {/* Tasks */}
