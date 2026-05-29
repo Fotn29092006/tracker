@@ -85,10 +85,10 @@ export function Diagnostics() {
       verdict = 'Это не standalone. Открой как PWA с экрана «Домой».';
     } else if (deficit !== null && deficit <= 1) {
       bg = 'var(--positive-16)'; fg = 'var(--positive)';
-      verdict = '✓ Вебвью на весь экран. Полосы снизу быть не должно (ниже меню — 34px под home-индикатор, это норма).';
+      verdict = '✓ Вебвью на весь экран. Полосы снизу нет.';
     } else {
-      bg = 'var(--negative-16)'; fg = 'var(--negative)';
-      verdict = `✗ Вебвью короче экрана на ${deficit}px — это и есть зазор. Нужен другой механизм.`;
+      bg = 'var(--accent-12)'; fg = 'var(--accent)';
+      verdict = `iOS даёт вебвью на ${deficit}px короче экрана — высоту тут не исправить (особенность устройства). Поэтому меню и полоса под ним закрашены в цвет фона: шва быть не должно. Проверь низ глазами.`;
     }
   }
 

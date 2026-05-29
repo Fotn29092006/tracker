@@ -8,12 +8,18 @@ import { haptics } from '@/lib/haptics';
 import { spring } from '@/lib/motion';
 import { cn } from '@/lib/utils';
 
-// Mobile bottom navigation — glassy bar, animated active dot.
+// Mobile bottom navigation — animated active dot.
+// Background is var(--bg) (NOT --bg-elev) ON PURPOSE: on iOS the standalone
+// web view is ~62px shorter than the screen (innerHeight 894 vs 956), and that
+// strip below the web view is painted by <meta theme-color>, which we keep at
+// var(--bg). Matching the bar to --bg makes that strip blend into the bar — no
+// visible seam/gap. A lighter --bg-elev bar would re-expose the seam. The top
+// hairline keeps the bar visually distinct from the scrolling content.
 export function TabBar() {
   const pathname = usePathname();
   return (
     <nav
-      className="lg:hidden shrink-0 border-t border-[var(--border)] bg-[var(--bg-elev)]"
+      className="lg:hidden shrink-0 border-t border-[var(--border)] bg-[var(--bg)]"
       style={{ paddingBottom: 'var(--sab)' }}
     >
       <ul className="flex items-stretch h-[58px] max-w-[560px] mx-auto">
