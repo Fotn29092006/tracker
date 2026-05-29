@@ -23,7 +23,9 @@
 // v18: UI/UX P3 step 2 — day-progress bar on the Tasks dashboard card.
 // v19: UI/UX P4 perf — progress bar animates transform(scaleX) not width;
 // TaskRow memoised with stable handlers (no re-render storm on the task list).
-const CACHE = 'tracker-shell-v19';
+// v20: Nocturne+ redesign batch 1 — floating-pill TabBar (6 tabs incl Profile),
+// global motion keyframes, content/FAB spacing for the floating bar.
+const CACHE = 'tracker-shell-v20';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

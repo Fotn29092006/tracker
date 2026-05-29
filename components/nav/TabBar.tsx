@@ -3,59 +3,58 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { User } from 'lucide-react';
 import { NAV_ITEMS, isActive } from './navItems';
 import { haptics } from '@/lib/haptics';
-import { spring } from '@/lib/motion';
-import { cn } from '@/lib/utils';
 
-// Mobile bottom navigation — fixed to the bottom edge, animated active dot.
-// `position: fixed; bottom: 0` anchors to the full layout viewport = the
-// PHYSICAL screen bottom on iOS standalone. (An in-flow bar inside a locked
-// fixed-inset shell sat at innerHeight, ~62px short of the screen → the old
-// bottom gap.) bg-elev + safe-area padding fills the home-indicator zone with
-// no seam. Proven by the sibling posuda PWA.
+// Floating pill nav (Nocturne+). The active tab expands from a circular icon
+// into an icon+label pill; one shared layoutId springs the highlight between
+// tabs. Solid --surface-raised background (NO backdrop-filter, per CLAUDE.md).
+// position: fixed bottom keeps it pinned to the real screen bottom on iOS
+// standalone (see AppShell rationale). Profile is the 6th tab here.
+const TAB_ITEMS = [...NAV_ITEMS, { href: '/profile', label: 'Профиль', icon: User }];
+
 export function TabBar() {
   const pathname = usePathname();
   return (
     <nav
       aria-label="Основная навигация"
-      className="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-[var(--border)] bg-[var(--bg-elev)]"
-      style={{ paddingBottom: 'var(--sab)' }}
+      className="lg:hidden fixed inset-x-3 z-40 mx-auto flex max-w-[460px] items-center justify-between rounded-full border border-[var(--border)] bg-[var(--surface-raised)] p-1.5"
+      style={{ bottom: 'calc(14px + var(--sab))', boxShadow: 'var(--shadow-md)' }}
     >
-      <ul className="flex items-stretch h-[58px] max-w-[560px] mx-auto">
-        {NAV_ITEMS.map((item) => {
-          const active = isActive(pathname, item.href);
-          const Icon = item.icon;
-          return (
-            <li key={item.href} className="flex-1">
-              <Link
-                href={item.href}
-                aria-current={active ? 'page' : undefined}
-                onClick={() => haptics.soft()}
-                className="relative h-full flex flex-col items-center justify-center gap-1"
-              >
-                <span className="relative">
-                  {active && (
-                    <motion.span
-                      layoutId="tab-glow"
-                      transition={spring.tab}
-                      className="absolute -inset-x-3 -inset-y-2 rounded-full bg-[var(--accent-12)]"
-                    />
-                  )}
-                  <Icon
-                    size={23}
-                    strokeWidth={active ? 2.4 : 2}
-                    className={cn('relative transition-colors', active ? 'text-[var(--accent)]' : 'text-[var(--text-subtle)]')}
-                  />
-                </span>
-                <span className={cn('text-[10.5px] font-medium transition-colors', active ? 'text-[var(--accent)]' : 'text-[var(--text-subtle)]')}>
-                  {item.label}
-                </span>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+      {TAB_ITEMS.map((item) => {
+        const active = isActive(pathname, item.href);
+        const Icon = item.icon;
+        return (
+          <Link
+            key={item.href}
+            href={item.href}
+            aria-label={item.label}
+            aria-current={active ? 'page' : undefined}
+            onClick={() => haptics.soft()}
+            className="relative flex h-11 min-w-[44px] items-center justify-center rounded-full"
+            style={{ flex: active ? '0 1 auto' : '1 1 0' }}
+          >
+            {active && (
+              <motion.span
+                layoutId="tabbar-pill"
+                transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                className="absolute inset-0 rounded-full"
+                style={{ backgroundImage: 'var(--accent-grad)' }}
+              />
+            )}
+            <span
+              className="relative z-10 flex items-center gap-1.5 px-3"
+              style={{ color: active ? 'var(--on-accent)' : 'var(--text-muted)' }}
+            >
+              <Icon size={20} aria-hidden />
+              {active && (
+                <span className="text-[13px] font-semibold whitespace-nowrap">{item.label}</span>
+              )}
+            </span>
+          </Link>
+        );
+      })}
     </nav>
   );
 }

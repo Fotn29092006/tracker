@@ -17,8 +17,8 @@ export function Fab({ onClick, label = 'Добавить' }: { onClick: () => vo
       className="fixed right-5 z-30 grid h-14 w-14 place-items-center rounded-full text-[var(--on-accent)] shadow-[0_8px_24px_var(--accent-glow)]"
       style={{
         backgroundImage: 'var(--accent-grad)',
-        // Sit just above the in-flow tab bar (≈58px tall + safe-area).
-        bottom: 'calc(env(safe-area-inset-bottom, 0px) + 72px)',
+        // Sit above the floating pill nav (pill bottom 14 + ~56 tall + gap).
+        bottom: 'calc(env(safe-area-inset-bottom, 0px) + 86px)',
       }}
     >
       <Plus size={26} strokeWidth={2.5} />
