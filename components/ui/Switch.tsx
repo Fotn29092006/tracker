@@ -23,6 +23,8 @@ export function Switch({
       onClick={() => { haptics.soft(); onChange(!checked); }}
       className={cn(
         'relative h-[30px] w-[50px] rounded-full transition-colors shrink-0',
+        // Extend the tap target to ≥44px tall without resizing the track.
+        "before:absolute before:content-[''] before:-inset-y-2 before:-inset-x-1",
         checked ? 'bg-[var(--accent)]' : 'bg-[var(--border-strong)]',
       )}
     >

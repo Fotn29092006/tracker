@@ -33,7 +33,8 @@
   /* ── Text tiers ── */
   --text:           #F4F6FB;
   --text-muted:     #99A1B3;
-  --text-subtle:    #5C6475;
+  /* was #5C6475 (~3.3:1) — bumped to clear WCAG AA 4.5:1 for small labels */
+  --text-subtle:    #757E91;
 
   /* ── Brand accent — "aurora" blue→cyan ── */
   --accent:         #5B8CFF;
@@ -97,7 +98,8 @@
 
   --text:           #11131A;
   --text-muted:     #565E72;
-  --text-subtle:    #8A91A2;
+  /* was #8A91A2 (~2.9:1) — darkened to clear WCAG AA 4.5:1 on the light bg */
+  --text-subtle:    #636C7F;
 
   --accent:         #2F66F0;
   --accent-deep:    #2353D6;

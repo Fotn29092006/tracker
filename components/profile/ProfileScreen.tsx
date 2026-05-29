@@ -89,7 +89,7 @@ export function ProfileScreen() {
           <p className="text-[20px] font-semibold truncate">{name}</p>
           <p className="text-[14px] text-[var(--text-muted)]">{profile?.height_cm ? `Рост ${profile.height_cm} см` : 'Рост не указан'}</p>
         </div>
-        <button onClick={() => setEditOpen(true)} className="grid h-10 w-10 place-items-center rounded-full bg-[var(--surface-alt)] text-[var(--text-muted)]" aria-label="Изменить">
+        <button onClick={() => setEditOpen(true)} className="grid h-11 w-11 place-items-center rounded-full bg-[var(--surface-alt)] text-[var(--text-muted)]" aria-label="Изменить">
           <Pencil size={17} />
         </button>
       </div>
@@ -156,7 +156,7 @@ export function ProfileScreen() {
                   {e.note && <p className="text-[12px] text-[var(--text-subtle)] truncate">{e.note}</p>}
                 </div>
                 {e.weight_kg != null && <span className="num text-[15px] font-semibold">{e.weight_kg} кг</span>}
-                <button onClick={() => deleteEntry(e)} className="text-[var(--text-subtle)] hover:text-[var(--negative)] p-1"><Trash2 size={15} /></button>
+                <button onClick={() => deleteEntry(e)} aria-label="Удалить запись" className="grid h-11 w-11 -mr-2 shrink-0 place-items-center text-[var(--text-subtle)] hover:text-[var(--negative)]"><Trash2 size={16} /></button>
               </div>
             ))}
           </div>

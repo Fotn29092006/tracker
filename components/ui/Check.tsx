@@ -26,6 +26,9 @@ export function Check({
       style={{ width: size, height: size }}
       className={cn(
         'relative shrink-0 grid place-items-center rounded-full border-2 transition-colors',
+        // Invisible ≥44px hit area (WCAG 2.5.5 / HIG) without changing the
+        // visual size — the ::before extends the button's clickable box.
+        "before:absolute before:content-[''] before:-inset-[11px]",
         checked ? 'border-transparent text-[var(--on-accent)]' : 'border-[var(--border-strong)] text-transparent',
       )}
     >

@@ -74,7 +74,7 @@ export function HomeScreen() {
         title={greeting()}
         subtitle={name || undefined}
         right={
-          <Link href="/profile" className="grid h-11 w-11 place-items-center rounded-full text-[16px] font-bold text-[var(--on-accent)]" style={{ backgroundImage: 'var(--accent-grad)' }}>
+          <Link href="/profile" aria-label="Профиль" className="grid h-11 w-11 place-items-center rounded-full text-[16px] font-bold text-[var(--on-accent)]" style={{ backgroundImage: 'var(--accent-grad)' }}>
             {(name || profile?.name || '?').slice(0, 1).toUpperCase()}
           </Link>
         }

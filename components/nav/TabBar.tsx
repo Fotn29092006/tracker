@@ -18,6 +18,7 @@ export function TabBar() {
   const pathname = usePathname();
   return (
     <nav
+      aria-label="Основная навигация"
       className="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-[var(--border)] bg-[var(--bg-elev)]"
       style={{ paddingBottom: 'var(--sab)' }}
     >
@@ -29,6 +30,7 @@ export function TabBar() {
             <li key={item.href} className="flex-1">
               <Link
                 href={item.href}
+                aria-current={active ? 'page' : undefined}
                 onClick={() => haptics.soft()}
                 className="relative h-full flex flex-col items-center justify-center gap-1"
               >

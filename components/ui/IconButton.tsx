@@ -10,7 +10,7 @@ type Props = HTMLMotionProps<'button'> & {
   size?: number;
 };
 
-export function IconButton({ label, active, size = 40, className, onClick, children, ...rest }: Props) {
+export function IconButton({ label, active, size = 44, className, onClick, children, ...rest }: Props) {
   return (
     <motion.button
       aria-label={label}

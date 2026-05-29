@@ -11,7 +11,9 @@
 // (reaches the true physical bottom on iOS standalone, like the posuda PWA).
 // Status bar back to 'black'; bar restored to --bg-elev.
 // v13: removed the temporary Diagnostics block + /shelltest harness.
-const CACHE = 'tracker-shell-v13';
+// v14: UI/UX P1 — a11y + 44px tap targets (Check/Switch/IconButton hit areas,
+// nav aria-current, sheet dialog semantics + focus trap, label contrast AA).
+const CACHE = 'tracker-shell-v14';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

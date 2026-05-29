@@ -1,7 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion, type PanInfo } from 'framer-motion';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { spring } from '@/lib/motion';
@@ -18,6 +18,8 @@ type Props = {
 };
 
 export function Sheet({ open, onClose, title, children, footer }: Props) {
+  const panelRef = useRef<HTMLDivElement>(null);
+
   // Lock the document scroll (the page now scrolls naturally) so the background
   // can't move under the sheet.
   useEffect(() => {
@@ -35,6 +37,31 @@ export function Sheet({ open, onClose, title, children, footer }: Props) {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [open, onClose]);
+
+  // Focus management: move focus into the sheet on open, trap Tab within it,
+  // restore focus to the trigger on close (WCAG dialog semantics).
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.activeElement as HTMLElement | null;
+    const panel = panelRef.current;
+    panel?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab' || !panel) return;
+      const f = panel.querySelectorAll<HTMLElement>(
+        'a[href],button:not([disabled]),input,textarea,select,[tabindex]:not([tabindex="-1"])',
+      );
+      if (!f.length) return;
+      const first = f[0];
+      const last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      prev?.focus?.();
+    };
+  }, [open]);
 
   const onDragEnd = (_: unknown, info: PanInfo) => {
     if (info.offset.y > 120 || info.velocity.y > 700) {
@@ -57,8 +84,13 @@ export function Sheet({ open, onClose, title, children, footer }: Props) {
             onClick={onClose}
           />
           <motion.div
+            ref={panelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={title ?? 'Окно'}
+            tabIndex={-1}
             className={cn(
-              'relative w-full max-w-[560px] mx-auto',
+              'relative w-full max-w-[560px] mx-auto outline-none',
               'bg-[var(--bg-elev)] border-t border-[var(--border)]',
               'rounded-t-[26px] shadow-[var(--shadow-sheet)]',
               'flex flex-col max-h-[92dvh]',
