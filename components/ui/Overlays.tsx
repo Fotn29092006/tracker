@@ -83,7 +83,7 @@ export function OverlaysProvider({ children }: { children: React.ReactNode }) {
             {confirmState && (
               <div className="fixed inset-0 z-[65] grid place-items-center px-6">
                 <motion.div
-                  className="absolute inset-0 bg-black/55 backdrop-blur-[2px]"
+                  className="absolute inset-0 bg-black/55"
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                   onClick={() => closeConfirm(false)}
                 />

@@ -13,17 +13,13 @@ export const ease = {
   inOut: [0.65, 0, 0.35, 1] as [number, number, number, number],
 };
 
-// Staggered list reveal — apply `listContainer` to the wrapper and
-// `listItem` to each child.
-export const listContainer: Variants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.04, delayChildren: 0.02 } },
-};
-
-export const listItem: Variants = {
-  hidden: { opacity: 0, y: 10 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.32, ease: ease.out } },
-};
+// List reveal — intentionally instant. The single screen-level fade
+// (app/(app)/template.tsx) is the only entrance; staggering each row on top of
+// it stacked 2–3 animations and read as "choppy". Kept as no-op variants so
+// screens can keep using `variants={listItem}` without churn (and still attach
+// their own whileTap, etc.).
+export const listContainer: Variants = { hidden: {}, show: {} };
+export const listItem: Variants = { hidden: { opacity: 1 }, show: { opacity: 1 } };
 
 // Press feedback for interactive cards/buttons.
 export const pressable = {
