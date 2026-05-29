@@ -26,6 +26,7 @@ import { AccountForm } from './AccountForm';
 import { TransactionForm } from './TransactionForm';
 import { DebtForm } from './DebtForm';
 import { SavingsGoalForm } from './SavingsGoalForm';
+import { SpendingWheel } from './SpendingWheel';
 import type { Account, AccountWithBalance, Debt, SavingsGoal, Transaction } from '@/lib/types';
 
 type Tab = 'ops' | 'debts' | 'savings';
@@ -58,6 +59,18 @@ export function FinanceScreen() {
       if (t.kind === 'income') income += t.amount; else expense += t.amount;
     }
     return { income, expense };
+  }, [transactions]);
+
+  // This month's expenses grouped by category, biggest first — for the wheel.
+  const spendBreakdown = useMemo<[string, number][]>(() => {
+    const ym = todayISO().slice(0, 7);
+    const m = new Map<string, number>();
+    for (const t of transactions) {
+      if (t.kind !== 'expense' || !t.occurred_on.startsWith(ym)) continue;
+      const cat = t.category || 'Прочее';
+      m.set(cat, (m.get(cat) ?? 0) + t.amount);
+    }
+    return [...m.entries()].sort((a, b) => b[1] - a[1]);
   }, [transactions]);
 
   const accName = useMemo(() => new Map(accounts.map((a) => [a.id, a])), [accounts]);
@@ -94,7 +107,7 @@ export function FinanceScreen() {
       >
         <div aria-hidden className="absolute -right-8 -top-10 h-40 w-40 rounded-full blur-[60px] opacity-25" style={{ backgroundImage: 'var(--accent-grad)' }} />
         <p className="relative text-[13px] text-[var(--text-muted)] mb-1">Всего на счетах</p>
-        <p className="relative num text-[36px] font-bold tracking-tight"><AnimatedNumber value={total} format={fmtAmount} /> <span className="text-[var(--text-muted)] text-[24px]">{currencySymbol(currency)}</span></p>
+        <p className="relative num text-[40px] font-bold tracking-tight leading-none"><AnimatedNumber value={total} format={fmtAmount} /> <span className="text-[var(--text-muted)] text-[24px]">{currencySymbol(currency)}</span></p>
         <div className="relative mt-4 flex gap-5">
           <div className="flex items-center gap-2">
             <span className="grid h-8 w-8 place-items-center rounded-full bg-[var(--positive-16)] text-[var(--positive)]"><ArrowDownLeft size={16} /></span>
@@ -143,7 +156,15 @@ export function FinanceScreen() {
 
       <TabPanel key={tab}>
         {tab === 'ops' && (
-          <Operations transactions={transactions} accName={accName} onEdit={(t) => { setEditTx(t); setTxForm(true); }} onAdd={() => { setEditTx(null); setTxForm(true); }} />
+          <div className="space-y-5">
+            {month.expense > 0 && spendBreakdown.length > 0 && (
+              <div className="rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)] p-4">
+                <p className="mb-3.5 text-[13px] font-semibold">Куда уходят деньги</p>
+                <SpendingWheel breakdown={spendBreakdown} total={month.expense} />
+              </div>
+            )}
+            <Operations transactions={transactions} accName={accName} onEdit={(t) => { setEditTx(t); setTxForm(true); }} onAdd={() => { setEditTx(null); setTxForm(true); }} />
+          </div>
         )}
         {tab === 'debts' && (
           <Debts debts={debts} currency={currency} onEdit={(d) => { setEditDebt(d); setDebtForm(true); }} onAdd={() => { setEditDebt(null); setDebtForm(true); }}

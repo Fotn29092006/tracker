@@ -28,7 +28,9 @@
 // v21: redesign batch 2 — NextUpCard on Home + per-digit AnimatedNumber.
 // v22: redesign batch 3 — TaskQuickAdd smart-input sheet (parser:
 // date/time/#tag/🔥) wired to the Home + Tasks FAB; advanced opens full form.
-const CACHE = 'tracker-shell-v22';
+// v23: fix profile save (upsert + getUserId, was a no-op UPDATE on a missing
+// row / cold-start userId); redesign #5 — SpendingWheel on Finance + larger hero.
+const CACHE = 'tracker-shell-v23';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

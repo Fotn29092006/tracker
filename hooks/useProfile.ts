@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createClient } from '@/lib/supabase/client';
+import { createClient, getUserId } from '@/lib/supabase/client';
 import { useUserId } from './useUserId';
 import type { Profile } from '@/lib/types';
 
@@ -23,12 +23,15 @@ export function useProfile() {
 
 export function useProfileMutations() {
   const qc = useQueryClient();
-  const userId = useUserId();
   const supabase = createClient();
 
   const update = useMutation({
     mutationFn: async (patch: Partial<Profile>) => {
-      const { error } = await supabase.from('profiles').update(patch).eq('id', userId);
+      // UPSERT (not UPDATE) + reliable getUserId(): the profiles row may not
+      // exist yet for this user, and useUserId() can be null on a cold start —
+      // either made name/height silently fail to save (UPDATE matched 0 rows).
+      const uid = await getUserId();
+      const { error } = await supabase.from('profiles').upsert({ id: uid, ...patch });
       if (error) throw error;
     },
     onMutate: async (patch) => {
