@@ -2,8 +2,7 @@
 
 import { useMemo } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createClient } from '@/lib/supabase/client';
-import { useUserId } from './useUserId';
+import { createClient, getUserId } from '@/lib/supabase/client';
 import { addDaysISO } from '@/lib/utils';
 import type { Exercise, MuscleId, PlanExercise, WorkoutSession, SessionExercise } from '@/lib/types';
 
@@ -86,14 +85,13 @@ export function useMuscleVolume(windowDays = 7) {
 // ── Mutations ────────────────────────────────────────────
 export function useWorkoutMutations() {
   const qc = useQueryClient();
-  const userId = useUserId();
   const supabase = createClient();
   const invPlan = () => qc.invalidateQueries({ queryKey: PLAN_KEY });
   const invSessions = () => qc.invalidateQueries({ queryKey: SESSIONS_KEY });
 
   const addPlanExercise = useMutation({
     mutationFn: async (input: { day_of_week: number; exercise_id: string; sets: number; reps: number; position: number }) => {
-      const { error } = await supabase.from('plan_exercises').insert({ user_id: userId, ...input });
+      const { error } = await supabase.from('plan_exercises').insert({ user_id: await getUserId(), ...input });
       if (error) throw error;
     },
     onSuccess: invPlan,
@@ -120,7 +118,7 @@ export function useWorkoutMutations() {
     mutationFn: async ({ day_of_week, date, planItems }: { day_of_week: number; date: string; planItems: PlanExercise[] }) => {
       const { data: session, error } = await supabase
         .from('workout_sessions')
-        .insert({ user_id: userId, performed_on: date, day_of_week })
+        .insert({ user_id: await getUserId(), performed_on: date, day_of_week })
         .select('id')
         .single();
       if (error) throw error;
@@ -146,7 +144,7 @@ export function useWorkoutMutations() {
     mutationFn: async (input: { name: string; category: Exercise['category']; equipment: Exercise['equipment']; muscle_distribution: Exercise['muscle_distribution'] }) => {
       const { data, error } = await supabase
         .from('exercises')
-        .insert({ user_id: userId, is_system: false, ...input, name: input.name.trim() })
+        .insert({ user_id: await getUserId(), is_system: false, ...input, name: input.name.trim() })
         .select('id')
         .single();
       if (error) throw error;

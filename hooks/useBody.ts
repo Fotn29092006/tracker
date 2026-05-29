@@ -1,8 +1,7 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createClient } from '@/lib/supabase/client';
-import { useUserId } from './useUserId';
+import { createClient, getUserId } from '@/lib/supabase/client';
 import { uid } from '@/lib/utils';
 import type { BodyEntry } from '@/lib/types';
 
@@ -25,14 +24,14 @@ export function useBodyEntries() {
 
 export function useBodyMutations() {
   const qc = useQueryClient();
-  const userId = useUserId();
   const supabase = createClient();
   const inv = () => qc.invalidateQueries({ queryKey: BODY_KEY });
 
   /** Upload a progress photo to Storage, return its public URL. */
   async function uploadPhoto(file: File): Promise<string> {
+    const ownerId = await getUserId();
     const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
-    const path = `${userId}/${uid()}.${ext}`;
+    const path = `${ownerId}/${uid()}.${ext}`;
     const { error } = await supabase.storage.from('progress').upload(path, file, {
       cacheControl: '3600', upsert: false, contentType: file.type || 'image/jpeg',
     });
@@ -42,7 +41,7 @@ export function useBodyMutations() {
 
   const add = useMutation({
     mutationFn: async (input: { recorded_on: string; weight_kg: number | null; photo_url: string | null; note: string | null }) => {
-      const { error } = await supabase.from('body_entries').insert({ user_id: userId, ...input });
+      const { error } = await supabase.from('body_entries').insert({ user_id: await getUserId(), ...input });
       if (error) throw error;
     },
     onSuccess: inv,

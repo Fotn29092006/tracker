@@ -1,8 +1,7 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createClient } from '@/lib/supabase/client';
-import { useUserId } from './useUserId';
+import { createClient, getUserId } from '@/lib/supabase/client';
 import type { Note } from '@/lib/types';
 
 const NOTES_KEY = ['notes'];
@@ -25,14 +24,13 @@ export function useNotes() {
 
 export function useNoteMutations() {
   const qc = useQueryClient();
-  const userId = useUserId();
   const supabase = createClient();
   const inv = () => qc.invalidateQueries({ queryKey: NOTES_KEY });
 
   const add = useMutation({
     mutationFn: async (input: { title: string; body: string | null }) => {
       const { data, error } = await supabase.from('notes')
-        .insert({ user_id: userId, title: input.title.trim(), body: input.body })
+        .insert({ user_id: await getUserId(), title: input.title.trim(), body: input.body })
         .select('id').single();
       if (error) throw error;
       return data.id as string;

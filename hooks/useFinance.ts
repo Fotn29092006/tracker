@@ -1,8 +1,7 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createClient } from '@/lib/supabase/client';
-import { useUserId } from './useUserId';
+import { createClient, getUserId } from '@/lib/supabase/client';
 import type { Account, AccountWithBalance, Debt, SavingsGoal, Transaction } from '@/lib/types';
 
 const ACCOUNTS_KEY = ['accounts'];
@@ -95,7 +94,6 @@ export function useSavingsGoals() {
 // ── Mutations ────────────────────────────────────────────
 export function useFinanceMutations() {
   const qc = useQueryClient();
-  const userId = useUserId();
   const supabase = createClient();
 
   const inv = (...keys: string[][]) => keys.forEach((k) => qc.invalidateQueries({ queryKey: k }));
@@ -103,7 +101,7 @@ export function useFinanceMutations() {
   // Accounts
   const addAccount = useMutation({
     mutationFn: async (input: { name: string; currency: string; initial_balance: number; color: string }) => {
-      const { error } = await supabase.from('accounts').insert({ user_id: userId, ...input, name: input.name.trim() });
+      const { error } = await supabase.from('accounts').insert({ user_id: await getUserId(), ...input, name: input.name.trim() });
       if (error) throw error;
     },
     onSuccess: () => inv(ACCOUNTS_KEY),
@@ -129,7 +127,7 @@ export function useFinanceMutations() {
       account_id: string; kind: 'income' | 'expense'; amount: number;
       category?: string | null; note?: string | null; occurred_on: string;
     }) => {
-      const { error } = await supabase.from('transactions').insert({ user_id: userId, ...input });
+      const { error } = await supabase.from('transactions').insert({ user_id: await getUserId(), ...input });
       if (error) throw error;
     },
     onSuccess: () => inv(TX_KEY, ACCOUNTS_KEY),
@@ -155,7 +153,7 @@ export function useFinanceMutations() {
       direction: 'owed_to_me' | 'i_owe'; counterparty: string; amount: number;
       note?: string | null; due_date?: string | null;
     }) => {
-      const { error } = await supabase.from('debts').insert({ user_id: userId, ...input, counterparty: input.counterparty.trim() });
+      const { error } = await supabase.from('debts').insert({ user_id: await getUserId(), ...input, counterparty: input.counterparty.trim() });
       if (error) throw error;
     },
     onSuccess: () => inv(DEBTS_KEY),
@@ -181,7 +179,7 @@ export function useFinanceMutations() {
       title: string; target_amount: number; saved_amount: number;
       deadline?: string | null; account_id?: string | null;
     }) => {
-      const { error } = await supabase.from('savings_goals').insert({ user_id: userId, ...input, title: input.title.trim() });
+      const { error } = await supabase.from('savings_goals').insert({ user_id: await getUserId(), ...input, title: input.title.trim() });
       if (error) throw error;
     },
     onSuccess: () => inv(SAVINGS_KEY),

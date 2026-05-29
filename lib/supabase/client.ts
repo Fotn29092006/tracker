@@ -15,3 +15,14 @@ export function createClient() {
       : { global: { fetch: () => Promise.reject(new Error('Supabase not configured')) } },
   );
 }
+
+// Resolve the signed-in user id from the locally-stored session — fast, no
+// network round-trip, and always current. Used to stamp inserts so they never
+// race the async `useUserId` query (which could otherwise send a null user_id
+// right after a cold start and trip the NOT NULL / RLS check).
+export async function getUserId(): Promise<string> {
+  const { data } = await createClient().auth.getSession();
+  const id = data.session?.user?.id;
+  if (!id) throw new Error('Сессия не найдена — войдите снова');
+  return id;
+}

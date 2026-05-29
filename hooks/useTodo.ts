@@ -1,8 +1,7 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createClient } from '@/lib/supabase/client';
-import { useUserId } from './useUserId';
+import { createClient, getUserId } from '@/lib/supabase/client';
 import type { Goal, GoalWithProgress, Task } from '@/lib/types';
 
 const TASKS_KEY = ['tasks'];
@@ -60,7 +59,6 @@ export type NewTask = {
 
 export function useTaskMutations() {
   const qc = useQueryClient();
-  const userId = useUserId();
   const supabase = createClient();
   const invalidate = () => {
     qc.invalidateQueries({ queryKey: TASKS_KEY });
@@ -70,7 +68,7 @@ export function useTaskMutations() {
   const add = useMutation({
     mutationFn: async (input: NewTask) => {
       const { error } = await supabase.from('tasks').insert({
-        user_id: userId,
+        user_id: await getUserId(),
         title: input.title.trim(),
         note: input.note ?? null,
         due_date: input.due_date ?? null,
@@ -134,7 +132,6 @@ export type NewGoal = { title: string; note?: string | null; target_date?: strin
 
 export function useGoalMutations() {
   const qc = useQueryClient();
-  const userId = useUserId();
   const supabase = createClient();
   const invalidate = () => {
     qc.invalidateQueries({ queryKey: GOALS_KEY });
@@ -144,7 +141,7 @@ export function useGoalMutations() {
   const add = useMutation({
     mutationFn: async (input: NewGoal) => {
       const { data, error } = await supabase.from('goals').insert({
-        user_id: userId,
+        user_id: await getUserId(),
         title: input.title.trim(),
         note: input.note ?? null,
         target_date: input.target_date ?? null,
