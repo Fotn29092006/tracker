@@ -10,7 +10,8 @@
 // v12: REAL fix — natural document scroll + TabBar position:fixed bottom:0
 // (reaches the true physical bottom on iOS standalone, like the posuda PWA).
 // Status bar back to 'black'; bar restored to --bg-elev.
-const CACHE = 'tracker-shell-v12';
+// v13: removed the temporary Diagnostics block + /shelltest harness.
+const CACHE = 'tracker-shell-v13';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
