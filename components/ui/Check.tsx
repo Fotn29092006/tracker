@@ -22,7 +22,7 @@ export function Check({
       aria-label={checked ? 'Снять отметку' : 'Выполнить'}
       whileTap={{ scale: 0.82 }}
       transition={{ type: 'spring', stiffness: 500, damping: 24 }}
-      onClick={(e) => { e.stopPropagation(); haptics.success(); onChange(); }}
+      onClick={(e) => { e.preventDefault(); e.stopPropagation(); haptics.success(); onChange(); }}
       style={{ width: size, height: size }}
       className={cn(
         'relative shrink-0 grid place-items-center rounded-full border-2 transition-colors',

@@ -91,7 +91,7 @@ export function HomeScreen() {
             ) : (
               <div className="space-y-2 pt-1">
                 {todayTasks.map((t) => (
-                  <div key={t.id} className="flex items-center gap-2.5" onClick={(e) => e.preventDefault()}>
+                  <div key={t.id} className="flex items-center gap-2.5">
                     <Check size={22} checked={!!t.done_at} onChange={() => toggle.mutate(t)} />
                     <span className="text-[14px] truncate">{t.title}</span>
                   </div>
