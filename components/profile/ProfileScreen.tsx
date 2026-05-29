@@ -21,6 +21,7 @@ import { BodyEntryForm } from '@/components/body/BodyEntryForm';
 import { SecuritySection } from './SecuritySection';
 import { createClient } from '@/lib/supabase/client';
 import { fmtDateLabel } from '@/lib/utils';
+import { APP_VERSION } from '@/lib/version';
 import type { ThemeMode, BodyEntry } from '@/lib/types';
 
 const kgFormat = (n: number) => (Math.round(n * 10) / 10).toString();
@@ -176,6 +177,8 @@ export function ProfileScreen() {
       <button onClick={signOut} className="flex items-center justify-center gap-2 w-full h-12 rounded-[16px] text-[15px] font-medium text-[var(--negative)] bg-[var(--negative-08)]">
         <LogOut size={18} /> Выйти
       </button>
+
+      <p className="text-center text-[12px] text-[var(--text-subtle)] mt-5">Трекер · сборка {APP_VERSION}</p>
 
       <ProfileEditForm open={editOpen} onClose={() => setEditOpen(false)} initialName={profile?.name ?? ''} initialHeight={profile?.height_cm ?? null} onSave={(p) => update.mutate(p)} />
       <BodyEntryForm open={bodyForm} onClose={() => setBodyForm(false)} />
