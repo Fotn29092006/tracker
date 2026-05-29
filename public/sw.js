@@ -2,8 +2,9 @@
 // stale-while-revalidate for static assets (so CSS/JS updates land next load).
 // Bump CACHE on a breaking shell/layout change to force installed PWAs to drop
 // stale cached assets (activate wipes any cache name != CACHE). v2: app-shell
-// layout rewrite (in-flow bottom nav).
-const CACHE = 'tracker-shell-v6';
+// layout rewrite (in-flow bottom nav). v8: full-bleed PWA shell — black-
+// translucent status bar + fixed inset-0 frame (kills the iOS bottom band).
+const CACHE = 'tracker-shell-v8';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

@@ -13,11 +13,15 @@ export const metadata: Metadata = {
   manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,
-    // NOT 'black-translucent': on Dynamic Island iPhones that style mis-sizes
-    // the standalone viewport (innerHeight = screen − safe-top) and leaves a
-    // gap at the BOTTOM. 'black' makes the viewport fill from below the status
-    // bar to the physical bottom — no gap.
-    statusBarStyle: 'black',
+    // 'black-translucent' = the web view owns the FULL physical screen, edge to
+    // edge, top to bottom. With opaque 'black'/'default', iOS in standalone on
+    // Dynamic Island iPhones sizes the web view to (screen − safe-top) and
+    // leaves a ~62px system band at the BOTTOM that lives OUTSIDE the web
+    // viewport — so no shell height (dvh/svh/lvh) can ever fill it (that band
+    // was the bottom gap). Going full-bleed removes the band; we inset content
+    // ourselves via env(safe-area-inset-*). Trade-off: system status-bar text is
+    // always light — a theme-aware top scrim (AppShell) keeps it legible.
+    statusBarStyle: 'black-translucent',
     title: 'Трекер',
   },
   icons: { icon: '/icon', apple: '/apple-icon' },

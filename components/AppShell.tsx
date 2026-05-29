@@ -9,20 +9,28 @@ import { AuthGuard } from '@/components/AuthGuard';
 
 // App-shell layout: a full-screen flex frame where ONLY the inner <main>
 // scrolls; the bottom TabBar is an in-flow flex item (never position:fixed, so
-// it can't mis-paint on iOS). Height is pinned to the LARGE viewport (100lvh)
-// — on Dynamic Island iPhones in standalone, `dvh`/`fixed inset-0` report
-// ~62px short (the island area), leaving a gap below the bar; `lvh` is the
-// full physical screen height, so the bar reaches the very bottom.
+// it can't mis-paint on iOS). The frame is pinned to all four viewport edges
+// with `fixed inset-0` — no viewport-unit height to guess. Paired with the
+// 'black-translucent' status bar (app/layout.tsx) the web view spans the entire
+// physical screen, so inset-0 reaches the true top AND bottom; the TabBar's own
+// env(safe-area-inset-bottom) padding clears the home indicator. No system
+// band, no bottom gap.
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <OverlaysProvider>
       <AuthGuard>
         <LockGate>
           <ReminderWatcher />
+          {/* Status-bar legibility: 'black-translucent' forces light system
+              text; this theme-aware scrim (transparent in dark, a soft fade in
+              light) keeps the clock/battery readable over the page background.
+              pointer-events-none + top-only, so it never blocks taps. */}
           <div
-            className="fixed top-0 inset-x-0 flex overflow-hidden bg-[var(--bg)]"
-            style={{ height: '100lvh' }}
-          >
+            aria-hidden
+            className="pointer-events-none fixed inset-x-0 top-0 z-[60]"
+            style={{ height: 'env(safe-area-inset-top, 0px)', background: 'var(--statusbar-scrim)' }}
+          />
+          <div className="fixed inset-0 flex overflow-hidden bg-[var(--bg)]">
             <Sidebar />
             <div className="flex-1 min-w-0 flex flex-col">
               <main
