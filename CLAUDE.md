@@ -32,10 +32,15 @@ Cut (don't reintroduce): habits, streaks, books, subscriptions, net-worth,
 month/year reports, wrapped, pomodoro, achievements, AI insights, wellness.
 
 ## Conventions
-- **Layout = app-shell** (`components/AppShell.tsx`): `h-dvh` flex frame, only the
-  inner `<main id="app-scroll">` scrolls. The bottom nav (`TabBar`) is an
-  IN-FLOW flex item — **never `position: fixed`** (a fixed bar mis-paints / jumps
-  on iOS until first scroll). Don't reintroduce a fixed bottom bar.
+- **Layout = app-shell** (`components/AppShell.tsx`): NATURAL document scroll
+  (`min-h-[100dvh]`), **not** a locked `fixed inset-0` frame. The bottom nav
+  (`TabBar`) is **`position: fixed; bottom: 0`** + `paddingBottom: var(--sab)`
+  (safe-area). Rationale: on iOS standalone the content viewport (`innerHeight`)
+  is ~62px SHORTER than the physical screen (894 vs 956); a locked frame + an
+  in-flow bar parked the bar at 894 → the infamous bottom gap. A `fixed
+  bottom:0` bar anchors to the full layout viewport = the true screen bottom.
+  This mirrors the working sibling PWA (`posudamart_app`). Don't go back to a
+  locked scroller / in-flow bar.
 - **No `backdrop-filter` on fixed/overlay elements** — it janks on iOS. Use solid
   backgrounds (tab bar, sheet/dialog overlays).
 - **Motion is calm & non-compounding:** one opacity-only screen entrance

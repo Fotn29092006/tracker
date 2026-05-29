@@ -18,15 +18,14 @@ type Props = {
 };
 
 export function Sheet({ open, onClose, title, children, footer }: Props) {
-  // Lock the app's scroll container (not body — the app-shell scrolls inside
-  // #app-scroll) so the background can't move under the sheet, with no layout
-  // shift when opening.
+  // Lock the document scroll (the page now scrolls naturally) so the background
+  // can't move under the sheet.
   useEffect(() => {
     if (!open) return;
-    const el = document.getElementById('app-scroll');
-    const prev = el?.style.overflow ?? '';
-    if (el) el.style.overflow = 'hidden';
-    return () => { if (el) el.style.overflow = prev; };
+    const el = document.documentElement;
+    const prev = el.style.overflow;
+    el.style.overflow = 'hidden';
+    return () => { el.style.overflow = prev; };
   }, [open]);
 
   // Close on Escape.

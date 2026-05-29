@@ -6,10 +6,11 @@
 // translucent status bar + fixed inset-0 frame (kills the iOS bottom band).
 // v9: centralised safe-area vars, dropped minimal-ui, /shelltest harness.
 // v10: on-device Diagnostics back in Profile (auto-expanded verdict).
-// v11: REAL fix — iOS web view is 62px short of the screen (unfixable height);
-// the strip below is theme-color (=--bg), so the tab bar is now --bg too → the
-// seam blends away. Bar colour = page bg, distinguished only by its top hairline.
-const CACHE = 'tracker-shell-v11';
+// v11: bar colour-matched the off-screen strip (interim).
+// v12: REAL fix — natural document scroll + TabBar position:fixed bottom:0
+// (reaches the true physical bottom on iOS standalone, like the posuda PWA).
+// Status bar back to 'black'; bar restored to --bg-elev.
+const CACHE = 'tracker-shell-v12';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

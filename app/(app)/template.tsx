@@ -12,7 +12,8 @@ import { motion } from 'framer-motion';
 // container persists across navigations in the app-shell layout).
 export default function Template({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    document.getElementById('app-scroll')?.scrollTo({ top: 0 });
+    // Natural document scroll now (the shell is no longer a locked scroller).
+    window.scrollTo({ top: 0 });
   }, []);
 
   return (

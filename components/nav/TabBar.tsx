@@ -8,18 +8,17 @@ import { haptics } from '@/lib/haptics';
 import { spring } from '@/lib/motion';
 import { cn } from '@/lib/utils';
 
-// Mobile bottom navigation — animated active dot.
-// Background is var(--bg) (NOT --bg-elev) ON PURPOSE: on iOS the standalone
-// web view is ~62px shorter than the screen (innerHeight 894 vs 956), and that
-// strip below the web view is painted by <meta theme-color>, which we keep at
-// var(--bg). Matching the bar to --bg makes that strip blend into the bar — no
-// visible seam/gap. A lighter --bg-elev bar would re-expose the seam. The top
-// hairline keeps the bar visually distinct from the scrolling content.
+// Mobile bottom navigation — fixed to the bottom edge, animated active dot.
+// `position: fixed; bottom: 0` anchors to the full layout viewport = the
+// PHYSICAL screen bottom on iOS standalone. (An in-flow bar inside a locked
+// fixed-inset shell sat at innerHeight, ~62px short of the screen → the old
+// bottom gap.) bg-elev + safe-area padding fills the home-indicator zone with
+// no seam. Proven by the sibling posuda PWA.
 export function TabBar() {
   const pathname = usePathname();
   return (
     <nav
-      className="lg:hidden shrink-0 border-t border-[var(--border)] bg-[var(--bg)]"
+      className="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-[var(--border)] bg-[var(--bg-elev)]"
       style={{ paddingBottom: 'var(--sab)' }}
     >
       <ul className="flex items-stretch h-[58px] max-w-[560px] mx-auto">

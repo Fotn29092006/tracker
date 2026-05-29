@@ -13,15 +13,13 @@ export const metadata: Metadata = {
   manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,
-    // 'black-translucent' = the web view owns the FULL physical screen, edge to
-    // edge, top to bottom. With opaque 'black'/'default', iOS in standalone on
-    // Dynamic Island iPhones sizes the web view to (screen − safe-top) and
-    // leaves a ~62px system band at the BOTTOM that lives OUTSIDE the web
-    // viewport — so no shell height (dvh/svh/lvh) can ever fill it (that band
-    // was the bottom gap). Going full-bleed removes the band; we inset content
-    // ourselves via env(safe-area-inset-*). Trade-off: system status-bar text is
-    // always light — a theme-aware top scrim (AppShell) keeps it legible.
-    statusBarStyle: 'black-translucent',
+    // 'black' = opaque dark status bar with the web view below it (white system
+    // text reads on our dark top). The bottom gap is NOT a status-bar problem —
+    // it's solved in the layout: the TabBar is position:fixed bottom:0, which
+    // reaches the true physical screen bottom regardless of status-bar style.
+    // Mirrors the working sibling PWA (posuda, which uses natural scroll + a
+    // fixed bottom bar).
+    statusBarStyle: 'black',
     title: 'Трекер',
   },
   icons: { icon: '/icon', apple: '/apple-icon' },
