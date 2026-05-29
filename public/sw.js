@@ -4,7 +4,8 @@
 // stale cached assets (activate wipes any cache name != CACHE). v2: app-shell
 // layout rewrite (in-flow bottom nav). v8: full-bleed PWA shell — black-
 // translucent status bar + fixed inset-0 frame (kills the iOS bottom band).
-const CACHE = 'tracker-shell-v8';
+// v9: centralised safe-area vars, dropped minimal-ui, /shelltest harness.
+const CACHE = 'tracker-shell-v9';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

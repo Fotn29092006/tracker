@@ -25,6 +25,8 @@ export const metadata: Metadata = {
     title: 'Трекер',
   },
   icons: { icon: '/icon', apple: '/apple-icon' },
+  // Android/Chrome parity for the apple-* standalone hint above.
+  other: { 'mobile-web-app-capable': 'yes' },
 };
 
 export const viewport: Viewport = {

@@ -10,6 +10,14 @@
 :root {
   color-scheme: dark;
 
+  /* ── iOS safe-area insets — single source of truth. Used everywhere instead
+     of bare env() so the values can be overridden (e.g. the /shelltest harness
+     simulates a device's insets to test the layout off-device). ── */
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+
   /* ── Surfaces (deep graphite, faint cool tint) ── */
   --bg:             #0A0B0F;
   --bg-elev:        #0E1015;
@@ -226,9 +234,9 @@ input[type="month"]::-webkit-calendar-picker-indicator {
 
 /* Safe-area helpers (iOS notch / home indicator) */
 @supports (padding: max(0px)) {
-  .pt-safe { padding-top: max(env(safe-area-inset-top), 0px); }
-  .pb-safe { padding-bottom: max(env(safe-area-inset-bottom), 0px); }
-  .h-safe-b { height: env(safe-area-inset-bottom); }
+  .pt-safe { padding-top: max(var(--sat), 0px); }
+  .pb-safe { padding-bottom: max(var(--sab), 0px); }
+  .h-safe-b { height: var(--sab); }
 }
 
 .sr-only {

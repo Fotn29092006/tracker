@@ -8,7 +8,9 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: '/',
     scope: '/',
     display: 'standalone',
-    display_override: ['standalone', 'minimal-ui'],
+    // No 'minimal-ui' fallback: it can make the UA reserve space for a slim
+    // toolbar (a phantom bottom strip), which is exactly the gap we're killing.
+    display_override: ['standalone'],
     orientation: 'portrait',
     background_color: '#0A0B0F',
     theme_color: '#0A0B0F',

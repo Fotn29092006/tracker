@@ -14,7 +14,7 @@ export function TabBar() {
   return (
     <nav
       className="lg:hidden shrink-0 border-t border-[var(--border)] bg-[var(--bg-elev)]"
-      style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+      style={{ paddingBottom: 'var(--sab)' }}
     >
       <ul className="flex items-stretch h-[58px] max-w-[560px] mx-auto">
         {NAV_ITEMS.map((item) => {

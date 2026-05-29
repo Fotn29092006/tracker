@@ -28,7 +28,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div
             aria-hidden
             className="pointer-events-none fixed inset-x-0 top-0 z-[60]"
-            style={{ height: 'env(safe-area-inset-top, 0px)', background: 'var(--statusbar-scrim)' }}
+            style={{ height: 'var(--sat)', background: 'var(--statusbar-scrim)' }}
           />
           <div className="fixed inset-0 flex overflow-hidden bg-[var(--bg)]">
             <Sidebar />
@@ -37,7 +37,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 id="app-scroll"
                 className="flex-1 overflow-y-auto overscroll-contain"
               >
-                <div className="mx-auto w-full max-w-[640px] px-4 pt-[max(env(safe-area-inset-top),16px)] pb-24">
+                <div className="mx-auto w-full max-w-[640px] px-4 pt-[max(var(--sat),16px)] pb-24">
                   {children}
                 </div>
               </main>
