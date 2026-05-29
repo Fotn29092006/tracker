@@ -13,7 +13,11 @@ export const metadata: Metadata = {
   manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'black-translucent',
+    // NOT 'black-translucent': on Dynamic Island iPhones that style mis-sizes
+    // the standalone viewport (innerHeight = screen − safe-top) and leaves a
+    // gap at the BOTTOM. 'black' makes the viewport fill from below the status
+    // bar to the physical bottom — no gap.
+    statusBarStyle: 'black',
     title: 'Трекер',
   },
   icons: { icon: '/icon', apple: '/apple-icon' },
