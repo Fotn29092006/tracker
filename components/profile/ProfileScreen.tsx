@@ -22,6 +22,7 @@ import { SecuritySection } from './SecuritySection';
 import { createClient } from '@/lib/supabase/client';
 import { fmtDateLabel } from '@/lib/utils';
 import { APP_VERSION } from '@/lib/version';
+import { Diagnostics } from '@/components/Diagnostics';
 import type { ThemeMode, BodyEntry } from '@/lib/types';
 
 const kgFormat = (n: number) => (Math.round(n * 10) / 10).toString();
@@ -79,6 +80,8 @@ export function ProfileScreen() {
   return (
     <div>
       <AppHeader title="Профиль" />
+
+      <Diagnostics />
 
       {/* Identity */}
       <div className="flex items-center gap-4 mb-5">

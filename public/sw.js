@@ -5,7 +5,8 @@
 // layout rewrite (in-flow bottom nav). v8: full-bleed PWA shell — black-
 // translucent status bar + fixed inset-0 frame (kills the iOS bottom band).
 // v9: centralised safe-area vars, dropped minimal-ui, /shelltest harness.
-const CACHE = 'tracker-shell-v9';
+// v10: on-device Diagnostics back in Profile (auto-expanded verdict).
+const CACHE = 'tracker-shell-v10';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
