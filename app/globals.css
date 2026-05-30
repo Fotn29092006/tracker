@@ -180,12 +180,19 @@ body {
   -webkit-tap-highlight-color: transparent;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overscroll-behavior-y: none;
+  /* No rubber-band / pull-to-refresh on either axis — solid native edges. */
+  overscroll-behavior: none;
 }
 
+/* Native feel on the interactive chrome: no tap-flash, no long-press callout
+   menu, no accidental text selection while tapping/swiping. Content text in
+   non-interactive containers stays selectable; inputs are re-enabled below. */
 button, a, [role="button"] {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 :focus-visible {
@@ -197,6 +204,8 @@ button, a, [role="button"] {
 input, textarea, select {
   font-family: inherit;
   color: inherit;
+  -webkit-user-select: text;
+  user-select: text;
   /* 16px min stops iOS auto-zoom on focus */
   font-size: 16px;
 }

@@ -44,7 +44,9 @@
 // data never displayed. Read now uses the reliable session id (getUserId).
 // v29: avatar cropper — pan + zoom in a circle, exports a framed JPEG.
 // v30: redesign #9 — LockScreen with 88px avatar + greeting; PIN dots glow.
-const CACHE = 'tracker-shell-v30';
+// v31: native-feel polish — no long-press callout, no accidental text-select on
+// the chrome (inputs keep selection), no overscroll rubber-band on either axis.
+const CACHE = 'tracker-shell-v31';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
