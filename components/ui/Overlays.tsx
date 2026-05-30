@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { CheckCircle2, AlertTriangle, Info } from 'lucide-react';
 import { spring } from '@/lib/motion';
 import { haptics } from '@/lib/haptics';
+import { useScrollLock } from '@/hooks/useScrollLock';
 import { Button } from './Button';
 import { Portal } from './Portal';
 
@@ -54,6 +55,9 @@ export function OverlaysProvider({ children }: { children: React.ReactNode }) {
     confirmState?.resolve(v);
     setConfirmState(null);
   };
+
+  // Lock the page behind the confirm modal (no scroll/bounce bleed-through).
+  useScrollLock(!!confirmState);
 
   // Stable context value — otherwise every toast show/hide re-renders every
   // screen that calls useOverlays() (it sits above the whole app).

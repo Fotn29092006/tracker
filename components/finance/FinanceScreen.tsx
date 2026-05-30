@@ -102,7 +102,7 @@ export function FinanceScreen() {
       >
         <div aria-hidden className="absolute -right-8 -top-10 h-40 w-40 rounded-full blur-[60px] opacity-25" style={{ backgroundImage: 'var(--accent-grad)' }} />
         <p className="relative text-[13px] text-[var(--text-muted)] mb-1">Всего на счетах</p>
-        <p className="relative num text-[40px] font-bold tracking-tight leading-none"><AnimatedNumber value={total} format={fmtAmount} /> <span className="text-[var(--text-muted)] text-[24px]">{currencySymbol(currency)}</span></p>
+        <p className="relative num text-[clamp(30px,10vw,46px)] font-bold tracking-tight leading-none"><AnimatedNumber value={total} format={fmtAmount} /> <span className="text-[var(--text-muted)] text-[24px]">{currencySymbol(currency)}</span></p>
         <div className="relative mt-4 flex gap-5">
           <div className="flex items-center gap-2">
             <span className="grid h-8 w-8 place-items-center rounded-full bg-[var(--positive-16)] text-[var(--positive)]"><ArrowDownLeft size={16} /></span>

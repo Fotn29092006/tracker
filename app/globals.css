@@ -182,6 +182,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
   /* No rubber-band / pull-to-refresh on either axis — solid native edges. */
   overscroll-behavior: none;
+  /* Native app feel: UI chrome (numbers, titles, labels) isn't selectable and
+     has no long-press callout/magnifier. Inputs + `.selectable` content opt back
+     in below. */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Opt content text back into selection/copy (e.g. note bodies). */
+.selectable, .selectable * {
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
 }
 
 /* Native feel on the interactive chrome: no tap-flash, no long-press callout

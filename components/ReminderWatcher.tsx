@@ -21,11 +21,18 @@ export function ReminderWatcher() {
   const { data: tasks = [] } = useTasks();
   const { toast } = useOverlays();
   const fired = useRef(loadFired());
+  // Read the latest tasks/toast through refs so the 30s interval is created ONCE
+  // and never torn down + recreated on every task mutation (toggle/add/edit all
+  // invalidate ['tasks']) — that churn sat on the hottest path in the app.
+  const tasksRef = useRef(tasks);
+  tasksRef.current = tasks;
+  const toastRef = useRef(toast);
+  toastRef.current = toast;
 
   useEffect(() => {
     const check = () => {
       const now = Date.now();
-      for (const t of tasks) {
+      for (const t of tasksRef.current) {
         if (!t.reminder_at || t.done_at) continue;
         if (fired.current.has(t.id)) continue;
         const at = new Date(t.reminder_at).getTime();
@@ -35,14 +42,14 @@ export function ReminderWatcher() {
           saveFired(fired.current);
           haptics.warning();
           showLocalNotification('Напоминание', t.title);
-          toast(`Напоминание: ${t.title}`, 'info');
+          toastRef.current(`Напоминание: ${t.title}`, 'info');
         }
       }
     };
     check();
     const id = window.setInterval(check, 30_000);
     return () => clearInterval(id);
-  }, [tasks, toast]);
+  }, []);
 
   // If a reminder was unset/rescheduled, allow it to fire again.
   useEffect(() => {

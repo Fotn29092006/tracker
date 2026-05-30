@@ -73,7 +73,15 @@
 // v38: polish pass 2 — quick-hub blocks spring on press + success toasts after
 // each quick add; sparkline trend draws in (pathLength); workout-plan mutations
 // surface errors; EmptyState + goal-step radii tokenized.
-const CACHE = 'tracker-shell-v38';
+// v39: native-feel pass (skill-driven: vercel react-best-practices + web-design
+// + cloudflare web-perf + fixing-motion-performance). Sticky title header
+// (IntersectionObserver hairline); fluid hero numbers (clamp); UI chrome is
+// non-selectable / no long-press magnifier (note bodies opt back in); overlays
+// lock background scroll (useScrollLock); dropped backdrop-blur; 44px stepper
+// hit areas; responsive notes grid. Perf: ReminderWatcher interval no longer
+// recreated per task mutation; memoised Home + NextUpCard derivations;
+// optimizePackageImports += @tanstack.
+const CACHE = 'tracker-shell-v39';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

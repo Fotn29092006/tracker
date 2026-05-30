@@ -38,11 +38,10 @@ export function HomeScreen() {
   const todayDow = new Date().getDay();
   const currency = accounts[0]?.currency ?? 'KZT';
 
-  const todayTasks = useMemo(
-    () => tasks.filter((t) => !t.done_at && (t.due_date === today || (t.due_date && isPast(t.due_date)))).slice(0, 4),
-    [tasks, today],
-  );
-  const activeTotal = tasks.filter((t) => !t.done_at && (t.due_date === today || (t.due_date && isPast(t.due_date)))).length;
+  const { todayTasks, activeTotal } = useMemo(() => {
+    const active = tasks.filter((t) => !t.done_at && (t.due_date === today || (t.due_date && isPast(t.due_date))));
+    return { todayTasks: active.slice(0, 4), activeTotal: active.length };
+  }, [tasks, today]);
 
   // Today's completion: done-today vs everything on today's plate.
   const doneTodayCount = useMemo(
@@ -70,8 +69,8 @@ export function HomeScreen() {
     return buckets;
   }, [transactions, today]);
 
-  const todayPlan = plan.filter((p) => p.day_of_week === todayDow);
-  const doneToday = sessions.some((s) => s.performed_on === today);
+  const todayPlan = useMemo(() => plan.filter((p) => p.day_of_week === todayDow), [plan, todayDow]);
+  const doneToday = useMemo(() => sessions.some((s) => s.performed_on === today), [sessions, today]);
 
   const name = profile?.name?.split(' ')[0] || '';
 

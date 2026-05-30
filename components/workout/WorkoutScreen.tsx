@@ -270,11 +270,11 @@ function PlanDay({
 function Stepper({ value, min, onChange, label }: { value: number; min: number; onChange: (v: number) => void; label: string }) {
   return (
     <div className="flex items-center gap-1.5">
-      <button onClick={() => { haptics.soft(); onChange(Math.max(min, value - 1)); }} className="grid h-7 w-7 place-items-center rounded-full bg-[var(--surface-alt)] text-[var(--text-muted)] active:bg-[var(--surface-raised)]" aria-label={`${label} меньше`}>
+      <button onClick={() => { haptics.soft(); onChange(Math.max(min, value - 1)); }} className="relative grid h-7 w-7 place-items-center rounded-full bg-[var(--surface-alt)] text-[var(--text-muted)] active:bg-[var(--surface-raised)] before:absolute before:-inset-2 before:content-['']" aria-label={`${label} меньше`}>
         <Minus size={14} />
       </button>
       <span className="num text-[14px] font-semibold w-5 text-center tabular-nums">{value}</span>
-      <button onClick={() => { haptics.soft(); onChange(value + 1); }} className="grid h-7 w-7 place-items-center rounded-full bg-[var(--surface-alt)] text-[var(--text-muted)] active:bg-[var(--surface-raised)]" aria-label={`${label} больше`}>
+      <button onClick={() => { haptics.soft(); onChange(value + 1); }} className="relative grid h-7 w-7 place-items-center rounded-full bg-[var(--surface-alt)] text-[var(--text-muted)] active:bg-[var(--surface-raised)] before:absolute before:-inset-2 before:content-['']" aria-label={`${label} больше`}>
         <Plus size={14} />
       </button>
     </div>

@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ChevronRight, Flag, ListChecks, Dumbbell, Calendar, Sparkles, type LucideIcon } from 'lucide-react';
@@ -28,26 +29,29 @@ export function NextUpCard() {
   const today = todayISO();
   const todayDow = new Date().getDay();
 
-  const overdue = tasks.filter((t) => !t.done_at && t.due_date && isPast(t.due_date));
-  const todayTasks = tasks.filter((t) => !t.done_at && t.due_date === today);
-  const todayPlan = plan.filter((p) => p.day_of_week === todayDow);
-  const doneToday = sessions.some((s) => s.performed_on === today);
-  const upcoming = tasks
-    .filter((t) => !t.done_at && t.due_date && t.due_date > today)
-    .sort((a, b) => a.due_date!.localeCompare(b.due_date!))[0];
+  const v = useMemo<Variant>(() => {
+    const overdue = tasks.filter((t) => !t.done_at && t.due_date && isPast(t.due_date));
+    const todayTasks = tasks.filter((t) => !t.done_at && t.due_date === today);
+    const todayPlan = plan.filter((p) => p.day_of_week === todayDow);
+    const doneToday = sessions.some((s) => s.performed_on === today);
+    const upcoming = tasks
+      .filter((t) => !t.done_at && t.due_date && t.due_date > today)
+      .sort((a, b) => a.due_date!.localeCompare(b.due_date!))[0];
 
-  let v: Variant;
-  if (overdue.length) {
-    v = { kind: 'overdue', color: '--negative', label: 'Просрочено', icon: Flag, title: overdue[0].title, meta: fmtDateLabel(overdue[0].due_date!), href: '/tasks', count: overdue.length };
-  } else if (todayTasks.length) {
-    v = { kind: 'today', color: '--accent', label: 'Сегодня', icon: ListChecks, title: todayTasks[0].title, href: '/tasks', count: todayTasks.length };
-  } else if (todayPlan.length && !doneToday) {
-    v = { kind: 'workout', color: '--accent', label: 'Тренировка', icon: Dumbbell, title: `${todayPlan.length} упр. на сегодня`, meta: `${todayPlan.reduce((s, p) => s + (p.sets ?? 0), 0)} подходов`, href: '/workout' };
-  } else if (upcoming) {
-    v = { kind: 'upcoming', color: '--warning', label: 'Скоро', icon: Calendar, title: upcoming.title, meta: fmtDateLabel(upcoming.due_date!), href: '/tasks' };
-  } else {
-    v = { kind: 'clear', color: '--positive', label: 'Свободно', icon: Sparkles, title: 'На сегодня всё чисто', meta: 'Можно отдыхать или взяться за цели' };
-  }
+    if (overdue.length) {
+      return { kind: 'overdue', color: '--negative', label: 'Просрочено', icon: Flag, title: overdue[0].title, meta: fmtDateLabel(overdue[0].due_date!), href: '/tasks', count: overdue.length };
+    }
+    if (todayTasks.length) {
+      return { kind: 'today', color: '--accent', label: 'Сегодня', icon: ListChecks, title: todayTasks[0].title, href: '/tasks', count: todayTasks.length };
+    }
+    if (todayPlan.length && !doneToday) {
+      return { kind: 'workout', color: '--accent', label: 'Тренировка', icon: Dumbbell, title: `${todayPlan.length} упр. на сегодня`, meta: `${todayPlan.reduce((s, p) => s + (p.sets ?? 0), 0)} подходов`, href: '/workout' };
+    }
+    if (upcoming) {
+      return { kind: 'upcoming', color: '--warning', label: 'Скоро', icon: Calendar, title: upcoming.title, meta: fmtDateLabel(upcoming.due_date!), href: '/tasks' };
+    }
+    return { kind: 'clear', color: '--positive', label: 'Свободно', icon: Sparkles, title: 'На сегодня всё чисто', meta: 'Можно отдыхать или взяться за цели' };
+  }, [tasks, plan, sessions, today, todayDow]);
 
   const Icon = v.icon;
   const inner = (

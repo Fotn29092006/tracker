@@ -18,6 +18,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { useOverlays } from '@/components/ui/Overlays';
 import { useTheme } from '@/components/theme-provider';
 import { spring } from '@/lib/motion';
+import { useScrollLock } from '@/hooks/useScrollLock';
 import { useProfile, useProfileMutations } from '@/hooks/useProfile';
 import { useBodyEntries, useBodyMutations } from '@/hooks/useBody';
 import { BodyEntryForm } from '@/components/body/BodyEntryForm';
@@ -174,7 +175,7 @@ export function ProfileScreen() {
           <div>
             <p className="text-[13px] text-[var(--text-muted)] mb-1">Текущий вес</p>
             {latest?.weight_kg != null ? (
-              <p className="num text-[34px] font-bold leading-none">
+              <p className="num text-[clamp(28px,9vw,40px)] font-bold leading-none">
                 <AnimatedNumber value={latest.weight_kg ?? 0} format={kgFormat} /><span className="text-[var(--text-muted)] text-[20px]"> кг</span>
               </p>
             ) : (
@@ -209,7 +210,7 @@ export function ProfileScreen() {
             {photos.map((e) => (
               <button key={e.id} onClick={() => setLightbox(e.photo_url!)} className="shrink-0 relative">
                 <Image src={e.photo_url!} alt={fmtDateLabel(e.recorded_on)} width={130} height={170} sizes="130px" className="h-[170px] w-[130px] object-cover rounded-[16px] border border-[var(--border)]" />
-                <span className="absolute bottom-1.5 left-1.5 right-1.5 text-[11px] font-medium text-white bg-black/45 rounded-md px-1.5 py-0.5 backdrop-blur-sm">
+                <span className="absolute bottom-1.5 left-1.5 right-1.5 text-[11px] font-medium text-white bg-black/60 rounded-md px-1.5 py-0.5">
                   {fmtDateLabel(e.recorded_on)}{e.weight_kg ? ` · ${e.weight_kg} кг` : ''}
                 </span>
               </button>
@@ -289,6 +290,7 @@ function ProfileEditForm({
 }
 
 function Lightbox({ url, onClose }: { url: string | null; onClose: () => void }) {
+  useScrollLock(!!url);
   return (
     <Portal>
     <AnimatePresence>

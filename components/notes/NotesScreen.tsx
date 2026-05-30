@@ -47,7 +47,7 @@ export function NotesScreen() {
       )}
 
       {isLoading && notes.length === 0 ? (
-        <div className="grid grid-cols-2 gap-2.5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
           {Array.from({ length: 6 }).map((_, i) => (
             <Skeleton key={i} className="rounded-[var(--r-md)]" style={{ height: 96 + (i % 3) * 28 }} />
           ))}
@@ -79,7 +79,7 @@ function Section({ title, notes, onOpen }: { title?: string; notes: Note[]; onOp
       {title && (
         <p className="mb-2 px-1 text-[13px] font-semibold uppercase tracking-wide text-[var(--text-subtle)]">{title}</p>
       )}
-      <motion.div variants={listContainer} initial="hidden" animate="show" className="grid grid-cols-2 gap-2.5">
+      <motion.div variants={listContainer} initial="hidden" animate="show" className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
         {notes.map((n) => {
           const tone = NOTE_TONES[n.color] ?? NOTE_TONES.plain;
           return (
@@ -96,7 +96,7 @@ function Section({ title, notes, onOpen }: { title?: string; notes: Note[]; onOp
                 {n.pinned && <Pin size={14} className="mt-0.5 shrink-0 fill-current text-[var(--accent)]" />}
               </div>
               {n.body && (
-                <p className="mt-1 flex-1 whitespace-pre-wrap text-[13px] text-[var(--text-muted)] line-clamp-5">{n.body}</p>
+                <p className="selectable mt-1 flex-1 whitespace-pre-wrap text-[13px] text-[var(--text-muted)] line-clamp-5">{n.body}</p>
               )}
               <p className="mt-2 text-[11px] text-[var(--text-subtle)]">{fmtDateLabel(n.updated_at.slice(0, 10))}</p>
             </motion.button>
