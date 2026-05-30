@@ -34,7 +34,10 @@
 // stored in the progress bucket; needs the avatar_url column (migration 0003).
 // v25: redesign #7 — Notes mood colours (migration 0004 color column), pinned
 // section, search; note creation tolerates the pre-migration state.
-const CACHE = 'tracker-shell-v25';
+// v26: profile save hardened — UPDATE existing row (+ insert fallback) instead
+// of upsert (which needs an INSERT policy profiles may lack); clearer avatar
+// error pointing at the avatar_url migration.
+const CACHE = 'tracker-shell-v26';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

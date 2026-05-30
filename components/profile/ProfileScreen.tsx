@@ -47,9 +47,10 @@ export function ProfileScreen() {
     setUploadingAvatar(true);
     try {
       const url = await uploadAvatar(file);
-      update.mutate({ avatar_url: url });
-    } catch {
-      toast('Не удалось загрузить фото', 'error');
+      await update.mutateAsync({ avatar_url: url });
+    } catch (err) {
+      const msg = (err as Error)?.message ?? '';
+      toast(/avatar_url|column/i.test(msg) ? 'Сначала выполни SQL-миграцию avatar_url в Supabase' : 'Не удалось загрузить фото', 'error');
     } finally {
       setUploadingAvatar(false);
     }

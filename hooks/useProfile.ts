@@ -28,12 +28,17 @@ export function useProfileMutations() {
 
   const update = useMutation({
     mutationFn: async (patch: Partial<Profile>) => {
-      // UPSERT (not UPDATE) + reliable getUserId(): the profiles row may not
-      // exist yet for this user, and useUserId() can be null on a cold start —
-      // either made name/height silently fail to save (UPDATE matched 0 rows).
+      // Reliable getUserId() (useUserId() can be null on a cold start, which
+      // was the original save bug). UPDATE the existing (trigger-created) row —
+      // needs only the UPDATE policy; a blanket upsert would require an INSERT
+      // policy that profiles may not have. INSERT only if no row matched.
       const uid = await getUserId();
-      const { error } = await supabase.from('profiles').upsert({ id: uid, ...patch });
-      if (error) throw error;
+      const upd = await supabase.from('profiles').update(patch).eq('id', uid).select('id');
+      if (upd.error) throw upd.error;
+      if (!upd.data || upd.data.length === 0) {
+        const ins = await supabase.from('profiles').insert({ id: uid, ...patch });
+        if (ins.error) throw ins.error;
+      }
     },
     onMutate: async (patch) => {
       await qc.cancelQueries({ queryKey: PROFILE_KEY });
