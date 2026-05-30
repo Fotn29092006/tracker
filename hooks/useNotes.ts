@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createClient, getUserId } from '@/lib/supabase/client';
-import type { Note } from '@/lib/types';
+import type { Note, NoteColor } from '@/lib/types';
 
 const NOTES_KEY = ['notes'];
 
@@ -28,12 +28,15 @@ export function useNoteMutations() {
   const inv = () => qc.invalidateQueries({ queryKey: NOTES_KEY });
 
   const add = useMutation({
-    mutationFn: async (input: { title: string; body: string | null }) => {
-      const { data, error } = await supabase.from('notes')
-        .insert({ user_id: await getUserId(), title: input.title.trim(), body: input.body })
-        .select('id').single();
-      if (error) throw error;
-      return data.id as string;
+    mutationFn: async (input: { title: string; body: string | null; color?: NoteColor }) => {
+      const base = { user_id: await getUserId(), title: input.title.trim(), body: input.body };
+      let res = await supabase.from('notes').insert({ ...base, color: input.color ?? 'plain' }).select('id').single();
+      // Tolerate the pre-migration state where the `color` column doesn't exist.
+      if (res.error && /color/i.test(res.error.message)) {
+        res = await supabase.from('notes').insert(base).select('id').single();
+      }
+      if (res.error) throw res.error;
+      return res.data!.id as string;
     },
     onSuccess: inv,
   });

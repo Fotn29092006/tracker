@@ -166,12 +166,15 @@ export type BodyEntry = {
 };
 
 // ── Notes ────────────────────────────────────────────────
+export type NoteColor = 'plain' | 'accent' | 'positive' | 'warning';
+
 export type Note = {
   id: string;
   user_id: string;
   title: string;
   body: string | null;
   pinned: boolean;
+  color: NoteColor;
   updated_at: string;
   created_at: string;
 };

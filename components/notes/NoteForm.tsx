@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/Button';
 import { useOverlays } from '@/components/ui/Overlays';
 import { useNoteMutations } from '@/hooks/useNotes';
 import { cn } from '@/lib/utils';
-import type { Note } from '@/lib/types';
+import { NOTE_TONES, NOTE_COLOR_ORDER } from './noteColors';
+import type { Note, NoteColor } from '@/lib/types';
 
 export function NoteForm({ open, onClose, note }: { open: boolean; onClose: () => void; note?: Note | null }) {
   const { add, update, remove } = useNoteMutations();
@@ -18,12 +19,14 @@ export function NoteForm({ open, onClose, note }: { open: boolean; onClose: () =
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [pinned, setPinned] = useState(false);
+  const [color, setColor] = useState<NoteColor>('plain');
 
   useEffect(() => {
     if (!open) return;
     setTitle(note?.title ?? '');
     setBody(note?.body ?? '');
     setPinned(note?.pinned ?? false);
+    setColor(note?.color ?? 'plain');
   }, [open, note]);
 
   const busy = add.isPending || update.isPending;
@@ -33,9 +36,9 @@ export function NoteForm({ open, onClose, note }: { open: boolean; onClose: () =
     if (!canSave) { onClose(); return; }
     try {
       if (editing && note) {
-        await update.mutateAsync({ id: note.id, patch: { title: title.trim() || 'Без названия', body: body || null, pinned } });
+        await update.mutateAsync({ id: note.id, patch: { title: title.trim() || 'Без названия', body: body || null, pinned, color } });
       } else {
-        const id = await add.mutateAsync({ title: title.trim() || 'Без названия', body: body || null });
+        const id = await add.mutateAsync({ title: title.trim() || 'Без названия', body: body || null, color });
         if (pinned) await update.mutateAsync({ id, patch: { pinned: true } });
       }
       onClose();
@@ -65,6 +68,25 @@ export function NoteForm({ open, onClose, note }: { open: boolean; onClose: () =
         </button>
       </div>
       <Textarea rows={8} placeholder="Текст заметки…" value={body} onChange={(e) => setBody(e.target.value)} />
+
+      <div className="mt-3 flex items-center gap-2">
+        <span className="mr-1 text-[13px] text-[var(--text-muted)]">Цвет</span>
+        {NOTE_COLOR_ORDER.map((c) => (
+          <button
+            key={c}
+            type="button"
+            onClick={() => setColor(c)}
+            aria-label={`Цвет ${c}`}
+            className={cn('grid h-8 w-8 place-items-center rounded-full border-2 transition-transform active:scale-90', color === c ? 'border-[var(--text)]' : 'border-transparent')}
+          >
+            <span
+              className="h-5 w-5 rounded-full"
+              style={{ background: NOTE_TONES[c].dot, border: c === 'plain' ? '1.5px solid var(--border-strong)' : 'none' }}
+            />
+          </button>
+        ))}
+      </div>
+
       {editing && (
         <button onClick={del} className="mt-3 flex items-center gap-2 text-[14px] text-[var(--negative)] font-medium">
           <Trash2 size={16} /> Удалить

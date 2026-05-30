@@ -32,7 +32,9 @@
 // row / cold-start userId); redesign #5 — SpendingWheel on Finance + larger hero.
 // v24: redesign #8 (part) — profile photo avatar upload (72px, camera badge),
 // stored in the progress bucket; needs the avatar_url column (migration 0003).
-const CACHE = 'tracker-shell-v24';
+// v25: redesign #7 — Notes mood colours (migration 0004 color column), pinned
+// section, search; note creation tolerates the pre-migration state.
+const CACHE = 'tracker-shell-v25';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
