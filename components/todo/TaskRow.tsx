@@ -27,7 +27,7 @@ export const TaskRow = memo(function TaskRow({
   const dueToday = !done && task.due_date === todayISO();
 
   return (
-    <motion.div variants={listItem} layout>
+    <motion.div variants={listItem}>
       <SwipeRow onDelete={() => onDelete(task)}>
         <div
           onClick={() => onEdit(task)}

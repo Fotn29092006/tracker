@@ -46,7 +46,12 @@
 // v30: redesign #9 — LockScreen with 88px avatar + greeting; PIN dots glow.
 // v31: native-feel polish — no long-press callout, no accidental text-select on
 // the chrome (inputs keep selection), no overscroll rubber-band on either axis.
-const CACHE = 'tracker-shell-v31';
+// v32: deep perf pass 1 (audit-driven) — staleTime 5m + refetchOnReconnect:true
+// (no refetch storms / tab-return flashes), memoised Overlays value + useAccounts
+// /useGoals derivations (kills app-wide + balance-flip re-renders), dropped
+// framer `layout` from task/goal rows (no FLIP per mutation), removed muscle-
+// panel mode=wait lag, deleted dead useUserId.
+const CACHE = 'tracker-shell-v32';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

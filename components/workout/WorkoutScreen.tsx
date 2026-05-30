@@ -147,7 +147,7 @@ export function WorkoutScreen() {
               </div>
               <BodyFigure view={view} volume={volume} selected={muscle} onSelect={setMuscle} />
 
-              <AnimatePresence mode="wait">
+              <AnimatePresence>
                 {muscle ? (
                   <motion.div
                     key={muscle}

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { createClient, getUserId } from '@/lib/supabase/client';
 import type { Account, AccountWithBalance, Debt, SavingsGoal, Transaction } from '@/lib/types';
 
@@ -46,19 +47,23 @@ function useRawAccounts() {
 export function useAccounts() {
   const accQ = useRawAccounts();
   const txQ = useTransactions();
-  const tx = txQ.data ?? [];
 
-  const delta = new Map<string, number>();
-  for (const t of tx) {
-    delta.set(t.account_id, (delta.get(t.account_id) ?? 0) + (t.kind === 'income' ? t.amount : -t.amount));
-  }
-  const accounts: AccountWithBalance[] = (accQ.data ?? []).map((a) => ({
-    ...a,
-    balance: a.initial_balance + (delta.get(a.id) ?? 0),
-  }));
+  // Memoised on the raw query data so the derived array keeps a stable identity
+  // between renders (otherwise every consumer + their useMemos re-fire).
+  const { accounts, total } = useMemo(() => {
+    const delta = new Map<string, number>();
+    for (const t of txQ.data ?? []) {
+      delta.set(t.account_id, (delta.get(t.account_id) ?? 0) + (t.kind === 'income' ? t.amount : -t.amount));
+    }
+    const accounts: AccountWithBalance[] = (accQ.data ?? []).map((a) => ({
+      ...a,
+      balance: a.initial_balance + (delta.get(a.id) ?? 0),
+    }));
+    return { accounts, total: accounts.reduce((s, a) => s + a.balance, 0) };
+  }, [accQ.data, txQ.data]);
 
-  const total = accounts.reduce((s, a) => s + a.balance, 0);
-  return { ...accQ, data: accounts, total };
+  // Combined loading so balances don't flash 0 → real while transactions load.
+  return { ...accQ, data: accounts, total, isLoading: accQ.isLoading || txQ.isLoading };
 }
 
 export function useDebts() {

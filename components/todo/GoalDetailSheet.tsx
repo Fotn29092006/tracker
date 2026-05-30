@@ -85,7 +85,6 @@ export function GoalDetailSheet({
           {steps.map((s) => (
             <motion.div
               key={s.id}
-              layout
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 8 }}

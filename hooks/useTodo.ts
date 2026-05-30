@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { createClient, getUserId } from '@/lib/supabase/client';
 import type { Goal, GoalWithProgress, Task } from '@/lib/types';
 
@@ -39,13 +40,15 @@ export function useGoals() {
     },
   });
 
-  const tasks = tasksQ.data ?? [];
-  const goals: GoalWithProgress[] = (goalsQ.data ?? []).map((g) => {
-    const steps = tasks.filter((t) => t.goal_id === g.id);
-    return { ...g, total: steps.length, done: steps.filter((t) => t.done_at).length };
-  });
+  const goals = useMemo<GoalWithProgress[]>(() => {
+    const tasks = tasksQ.data ?? [];
+    return (goalsQ.data ?? []).map((g) => {
+      const steps = tasks.filter((t) => t.goal_id === g.id);
+      return { ...g, total: steps.length, done: steps.filter((t) => t.done_at).length };
+    });
+  }, [goalsQ.data, tasksQ.data]);
 
-  return { ...goalsQ, data: goals };
+  return { ...goalsQ, data: goals, isLoading: goalsQ.isLoading || tasksQ.isLoading };
 }
 
 // ── Mutations ────────────────────────────────────────────

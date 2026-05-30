@@ -17,10 +17,15 @@ export function Providers({ children }: { children: React.ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 60_000,
+            // Single-writer offline-first PWA: this device is the only mutator
+            // and every mutation invalidates its keys, so a long staleTime just
+            // avoids needless background refetch→cache-swap→re-render flashes on
+            // tab-return. refetchOnReconnect:true (not 'always') respects it, so
+            // a flaky mobile connection doesn't trigger refetch storms.
+            staleTime: 5 * 60_000,
             gcTime: 24 * 60 * 60_000,
             refetchOnWindowFocus: false,
-            refetchOnReconnect: 'always',
+            refetchOnReconnect: true,
             retry: 1,
             networkMode: 'offlineFirst',
           },

@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useCallback, useContext, useRef, useState } from 'react';
+import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CheckCircle2, AlertTriangle, Info } from 'lucide-react';
 import { spring } from '@/lib/motion';
@@ -55,8 +55,12 @@ export function OverlaysProvider({ children }: { children: React.ReactNode }) {
     setConfirmState(null);
   };
 
+  // Stable context value — otherwise every toast show/hide re-renders every
+  // screen that calls useOverlays() (it sits above the whole app).
+  const value = useMemo(() => ({ toast, confirm }), [toast, confirm]);
+
   return (
-    <OverlaysCtx.Provider value={{ toast, confirm }}>
+    <OverlaysCtx.Provider value={value}>
       {children}
       <Portal>
         <>
