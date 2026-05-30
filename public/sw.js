@@ -30,7 +30,9 @@
 // date/time/#tag/🔥) wired to the Home + Tasks FAB; advanced opens full form.
 // v23: fix profile save (upsert + getUserId, was a no-op UPDATE on a missing
 // row / cold-start userId); redesign #5 — SpendingWheel on Finance + larger hero.
-const CACHE = 'tracker-shell-v23';
+// v24: redesign #8 (part) — profile photo avatar upload (72px, camera badge),
+// stored in the progress bucket; needs the avatar_url column (migration 0003).
+const CACHE = 'tracker-shell-v24';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Pencil, LogOut, Scale, Trash2, X } from 'lucide-react';
+import { Pencil, LogOut, Scale, Trash2, X, Camera } from 'lucide-react';
 import { AppHeader } from '@/components/ui/AppHeader';
 import { Portal } from '@/components/ui/Portal';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
@@ -29,15 +29,31 @@ const kgFormat = (n: number) => (Math.round(n * 10) / 10).toString();
 export function ProfileScreen() {
   const router = useRouter();
   const { data: profile } = useProfile();
-  const { update } = useProfileMutations();
+  const { update, uploadAvatar } = useProfileMutations();
   const { data: entries = [] } = useBodyEntries();
   const { remove } = useBodyMutations();
   const { mode, setMode } = useTheme();
-  const { confirm } = useOverlays();
+  const { confirm, toast } = useOverlays();
 
   const [editOpen, setEditOpen] = useState(false);
   const [bodyForm, setBodyForm] = useState(false);
   const [lightbox, setLightbox] = useState<string | null>(null);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+
+  async function onPickAvatar(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+    setUploadingAvatar(true);
+    try {
+      const url = await uploadAvatar(file);
+      update.mutate({ avatar_url: url });
+    } catch {
+      toast('Не удалось загрузить фото', 'error');
+    } finally {
+      setUploadingAvatar(false);
+    }
+  }
 
   const weights = entries.filter((e) => e.weight_kg != null);
   const latest = weights[0];
@@ -82,9 +98,25 @@ export function ProfileScreen() {
 
       {/* Identity */}
       <div className="flex items-center gap-4 mb-5">
-        <span className="grid h-16 w-16 place-items-center rounded-[22px] text-[24px] font-bold text-[var(--on-accent)]" style={{ backgroundImage: 'var(--accent-grad)' }}>
-          {name.slice(0, 1).toUpperCase()}
-        </span>
+        <label
+          aria-label="Сменить фото"
+          className={`relative shrink-0 cursor-pointer${uploadingAvatar ? ' pointer-events-none opacity-60' : ''}`}
+        >
+          <input type="file" accept="image/*" className="sr-only" onChange={onPickAvatar} />
+          {profile?.avatar_url ? (
+            <Image src={profile.avatar_url} alt="Аватар" width={72} height={72} unoptimized className="h-[72px] w-[72px] rounded-full object-cover" />
+          ) : (
+            <span
+              className="grid h-[72px] w-[72px] place-items-center rounded-full text-[28px] font-bold text-[var(--on-accent)]"
+              style={{ backgroundImage: 'var(--accent-grad)', boxShadow: '0 8px 24px var(--accent-glow)' }}
+            >
+              {name.slice(0, 1).toUpperCase()}
+            </span>
+          )}
+          <span className="absolute -bottom-0.5 -right-0.5 grid h-7 w-7 place-items-center rounded-full border border-[var(--border)] bg-[var(--surface-raised)] text-[var(--text-muted)]">
+            <Camera size={14} />
+          </span>
+        </label>
         <div className="min-w-0 flex-1">
           <p className="text-[20px] font-semibold truncate">{name}</p>
           <p className="text-[14px] text-[var(--text-muted)]">{profile?.height_cm ? `Рост ${profile.height_cm} см` : 'Рост не указан'}</p>

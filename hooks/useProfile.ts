@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createClient, getUserId } from '@/lib/supabase/client';
+import { uid } from '@/lib/utils';
 import { useUserId } from './useUserId';
 import type { Profile } from '@/lib/types';
 
@@ -44,5 +45,17 @@ export function useProfileMutations() {
     onSettled: () => qc.invalidateQueries({ queryKey: PROFILE_KEY }),
   });
 
-  return { update };
+  /** Upload an avatar image to the `progress` bucket, return its public URL. */
+  async function uploadAvatar(file: File): Promise<string> {
+    const ownerId = await getUserId();
+    const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+    const path = `${ownerId}/avatar-${uid()}.${ext}`;
+    const { error } = await supabase.storage.from('progress').upload(path, file, {
+      cacheControl: '3600', upsert: true, contentType: file.type || 'image/jpeg',
+    });
+    if (error) throw error;
+    return supabase.storage.from('progress').getPublicUrl(path).data.publicUrl;
+  }
+
+  return { update, uploadAvatar };
 }

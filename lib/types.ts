@@ -12,6 +12,7 @@ export type Profile = {
   name: string;
   height_cm: number | null;
   theme: ThemeMode;
+  avatar_url: string | null;
   created_at: string;
   updated_at: string;
 };
