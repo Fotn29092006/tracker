@@ -19,6 +19,7 @@ import { useProfile, useProfileMutations } from '@/hooks/useProfile';
 import { useBodyEntries, useBodyMutations } from '@/hooks/useBody';
 import { BodyEntryForm } from '@/components/body/BodyEntryForm';
 import { SecuritySection } from './SecuritySection';
+import { AvatarCropper } from './AvatarCropper';
 import { createClient } from '@/lib/supabase/client';
 import { fmtDateLabel } from '@/lib/utils';
 import { APP_VERSION } from '@/lib/version';
@@ -39,18 +40,26 @@ export function ProfileScreen() {
   const [bodyForm, setBodyForm] = useState(false);
   const [lightbox, setLightbox] = useState<string | null>(null);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [pickedFile, setPickedFile] = useState<File | null>(null);
 
-  async function onPickAvatar(e: React.ChangeEvent<HTMLInputElement>) {
+  // Tapping the avatar opens the cropper; the actual upload happens on confirm.
+  function onPickAvatar(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = '';
-    if (!file) return;
+    if (file) setPickedFile(file);
+  }
+
+  async function onCropConfirm(blob: Blob) {
+    setPickedFile(null);
     setUploadingAvatar(true);
     try {
-      const url = await uploadAvatar(file);
+      const cropped = new File([blob], 'avatar.jpg', { type: 'image/jpeg' });
+      const url = await uploadAvatar(cropped);
       await update.mutateAsync({ avatar_url: url });
+      toast('Аватар обновлён', 'success');
     } catch (err) {
       const msg = (err as Error)?.message ?? '';
-      toast(/avatar_url|column/i.test(msg) ? 'Сначала выполни SQL-миграцию avatar_url в Supabase' : 'Не удалось загрузить фото', 'error');
+      toast(/avatar_url|column/i.test(msg) ? 'Сначала выполни SQL-миграцию avatar_url' : 'Не удалось загрузить фото', 'error');
     } finally {
       setUploadingAvatar(false);
     }
@@ -227,6 +236,7 @@ export function ProfileScreen() {
 
       <ProfileEditForm open={editOpen} onClose={() => setEditOpen(false)} initialName={profile?.name ?? ''} initialHeight={profile?.height_cm ?? null} onSave={saveProfile} />
       <BodyEntryForm open={bodyForm} onClose={() => setBodyForm(false)} />
+      <AvatarCropper file={pickedFile} onCancel={() => setPickedFile(null)} onConfirm={onCropConfirm} />
       <Lightbox url={lightbox} onClose={() => setLightbox(null)} />
     </div>
   );

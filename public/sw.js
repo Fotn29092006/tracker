@@ -42,7 +42,8 @@
 // v28: REAL profile bug — useProfile read was gated on useUserId()/getUser()
 // which returns undefined in standalone PWA, so the query never ran and saved
 // data never displayed. Read now uses the reliable session id (getUserId).
-const CACHE = 'tracker-shell-v28';
+// v29: avatar cropper — pan + zoom in a circle, exports a framed JPEG.
+const CACHE = 'tracker-shell-v29';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
