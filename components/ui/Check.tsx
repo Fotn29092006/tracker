@@ -45,7 +45,7 @@ export function Check({
       <motion.span
         initial={false}
         animate={{ scale: checked ? 1 : 0, opacity: checked ? 1 : 0 }}
-        transition={{ duration: 0.15 }}
+        transition={{ type: 'spring', stiffness: 600, damping: 20 }}
         className="relative"
       >
         <CheckIcon size={size * 0.56} strokeWidth={3.5} />

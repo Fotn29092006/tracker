@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { User } from 'lucide-react';
 import { NAV_ITEMS, isActive } from './navItems';
 import { navDirection } from '@/lib/navDirection';
+import { spring } from '@/lib/motion';
 import { haptics } from '@/lib/haptics';
 
 // Floating pill nav (Nocturne+). The active tab expands from a circular icon
@@ -44,7 +45,7 @@ export function TabBar() {
             {active && (
               <motion.span
                 layoutId="tabbar-pill"
-                transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                transition={spring.tab}
                 className="absolute inset-0 rounded-full"
                 style={{ backgroundImage: 'var(--accent-grad)' }}
               />

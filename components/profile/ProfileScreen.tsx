@@ -16,6 +16,7 @@ import { Segmented } from '@/components/ui/Segmented';
 import { Sparkline } from '@/components/ui/Sparkline';
 import { useOverlays } from '@/components/ui/Overlays';
 import { useTheme } from '@/components/theme-provider';
+import { spring } from '@/lib/motion';
 import { useProfile, useProfileMutations } from '@/hooks/useProfile';
 import { useBodyEntries, useBodyMutations } from '@/hooks/useBody';
 import { BodyEntryForm } from '@/components/body/BodyEntryForm';
@@ -281,7 +282,8 @@ function Lightbox({ url, onClose }: { url: string | null; onClose: () => void })
           <button className="absolute top-5 right-5 grid h-10 w-10 place-items-center rounded-full bg-white/15 text-white" aria-label="Закрыть"><X size={20} /></button>
           <motion.img
             src={url} alt="Фото прогресса"
-            initial={{ scale: 0.92 }} animate={{ scale: 1 }} exit={{ scale: 0.92 }}
+            initial={{ scale: 0.92, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.92, opacity: 0 }}
+            transition={spring.soft}
             className="max-h-[85dvh] max-w-full rounded-[20px] object-contain"
           />
         </motion.div>

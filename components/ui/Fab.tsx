@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
+import { spring } from '@/lib/motion';
 import { haptics } from '@/lib/haptics';
 
 // Floating action button — pinned bottom-right, above the tab bar.
@@ -10,9 +11,9 @@ export function Fab({ onClick, label = 'Добавить' }: { onClick: () => vo
     <motion.button
       aria-label={label}
       onClick={() => { haptics.tap(); onClick(); }}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.2, ease: 'easeOut' }}
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={spring.snappy}
       whileTap={{ scale: 0.9 }}
       className="fixed right-5 z-30 grid h-14 w-14 place-items-center rounded-full text-[var(--on-accent)] shadow-[0_8px_24px_var(--accent-glow)]"
       style={{

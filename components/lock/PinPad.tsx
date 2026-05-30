@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Delete, ScanFace } from 'lucide-react';
+import { ease } from '@/lib/motion';
 import { haptics } from '@/lib/haptics';
 import { PIN_LENGTH } from '@/lib/lock';
 import { cn } from '@/lib/utils';
@@ -35,7 +36,7 @@ export function PinPad({
       <motion.div
         className="flex gap-3.5 my-7"
         animate={error ? { x: [0, -9, 9, -7, 7, 0] } : { x: 0 }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.4, ease: ease.inOut }}
       >
         {Array.from({ length: PIN_LENGTH }).map((_, i) => (
           <span

@@ -16,7 +16,7 @@ import { useOverlays } from '@/components/ui/Overlays';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { TabPanel } from '@/components/ui/TabPanel';
 import { Skeleton, SkeletonList } from '@/components/ui/Skeleton';
-import { listContainer, listItem } from '@/lib/motion';
+import { listContainer, listItem, spring } from '@/lib/motion';
 import { cn, fmtMoney, fmtAmount, fmtDateLabel, currencySymbol, todayISO } from '@/lib/utils';
 import { categoryIcon } from '@/lib/categories';
 import {
@@ -97,7 +97,7 @@ export function FinanceScreen() {
 
       {/* Hero total */}
       <motion.div
-        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={spring.soft}
         className="rounded-[var(--r-xl)] p-5 mb-4 relative overflow-hidden border border-[var(--border)] bg-[var(--surface)]"
       >
         <div aria-hidden className="absolute -right-8 -top-10 h-40 w-40 rounded-full blur-[60px] opacity-25" style={{ backgroundImage: 'var(--accent-grad)' }} />
@@ -131,7 +131,7 @@ export function FinanceScreen() {
           >
             <span className="absolute left-0 top-0 bottom-0 w-1" style={{ background: a.color }} />
             <p className="text-[13px] text-[var(--text-muted)] truncate">{a.name}</p>
-            <p className="num text-[18px] font-semibold mt-1">{fmtAmount(a.balance)}</p>
+            <p className="num text-[18px] font-semibold mt-1"><AnimatedNumber value={a.balance} format={fmtAmount} /></p>
             <p className="text-[11px] text-[var(--text-subtle)] mt-0.5">{currencySymbol(a.currency)}</p>
           </button>
         ))}
@@ -320,7 +320,9 @@ function DebtRow({ debt, onEdit, onSettle }: { debt: Debt; onEdit: (d: Debt) => 
         className={cn('grid h-9 w-9 place-items-center rounded-full shrink-0 transition-colors', settled ? 'bg-[var(--positive)] text-[var(--on-accent)]' : 'border-2 border-[var(--border-strong)] text-transparent')}
         aria-label={settled ? 'Вернуть в активные' : 'Отметить закрытым'}
       >
-        <Check size={16} strokeWidth={3} />
+        <motion.span initial={false} animate={{ scale: settled ? 1 : 0 }} transition={{ type: 'spring', stiffness: 600, damping: 20 }}>
+          <Check size={16} strokeWidth={3} />
+        </motion.span>
       </button>
       <button onClick={() => onEdit(debt)} className="min-w-0 flex-1 text-left">
         <p className={cn('text-[15px] font-medium truncate', settled && 'line-through text-[var(--text-subtle)]')}>{debt.counterparty}</p>

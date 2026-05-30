@@ -10,7 +10,7 @@ import { Check } from '@/components/ui/Check';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { Skeleton } from '@/components/ui/Skeleton';
 import { Sparkline } from '@/components/ui/Sparkline';
-import { listContainer, listItem } from '@/lib/motion';
+import { listContainer, listItem, ease } from '@/lib/motion';
 import { cn, fmtAmount, currencySymbol, todayISO, isPast, WEEKDAYS_FULL } from '@/lib/utils';
 import { useTasks, useTaskMutations } from '@/hooks/useTodo';
 import { useAccounts, useTransactions } from '@/hooks/useFinance';
@@ -128,7 +128,7 @@ export function HomeScreen() {
                       style={{ backgroundImage: 'var(--accent-grad)' }}
                       initial={{ scaleX: 0 }}
                       animate={{ scaleX: taskRatio }}
-                      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                      transition={{ duration: 0.5, ease: ease.out }}
                     />
                   </div>
                 </div>

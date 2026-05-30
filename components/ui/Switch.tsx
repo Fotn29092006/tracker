@@ -32,7 +32,7 @@ export function Switch({
       <span
         aria-hidden
         className={cn(
-          'relative h-[30px] w-[50px] rounded-full transition-colors',
+          'relative h-[30px] w-[50px] rounded-full transition-colors duration-200',
           checked ? 'bg-[var(--accent)]' : 'bg-[var(--border-strong)]',
         )}
       >

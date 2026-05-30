@@ -2,6 +2,7 @@
 
 import { motion, type HTMLMotionProps } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { spring } from '@/lib/motion';
 import { haptics } from '@/lib/haptics';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
@@ -41,7 +42,7 @@ export function Button({
   return (
     <motion.button
       whileTap={disabled ? undefined : { scale: 0.96 }}
-      transition={{ type: 'spring', stiffness: 480, damping: 30 }}
+      transition={spring.snappy}
       onClick={(e) => {
         if (haptic && !disabled) haptics.tap();
         onClick?.(e);
