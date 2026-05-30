@@ -51,7 +51,10 @@
 // /useGoals derivations (kills app-wide + balance-flip re-renders), dropped
 // framer `layout` from task/goal rows (no FLIP per mutation), removed muscle-
 // panel mode=wait lag, deleted dead useUserId.
-const CACHE = 'tracker-shell-v32';
+// v33: deep perf pass 2 — code-split BodyFigure + AvatarCropper (next/dynamic),
+// optimise Supabase avatar/progress images (drop unoptimized), SWR navigation
+// for instant cold launch.
+const CACHE = 'tracker-shell-v33';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
@@ -76,14 +79,21 @@ self.addEventListener('fetch', (event) => {
   if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/auth/')) return;
 
   if (req.mode === 'navigate') {
+    // Stale-while-revalidate: serve the cached shell instantly (instant cold
+    // launch), revalidate in the background. The cache is wiped on every CACHE
+    // bump (activate), so a deploy can't serve a stale shell; the SW
+    // controllerchange reload lands the fresh version.
     event.respondWith(
-      fetch(req)
-        .then((res) => {
-          const copy = res.clone();
-          caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
-          return res;
-        })
-        .catch(() => caches.match(req).then((m) => m || caches.match('/'))),
+      caches.match(req).then((cached) => {
+        const network = fetch(req)
+          .then((res) => {
+            const copy = res.clone();
+            caches.open(CACHE).then((c) => c.put(req, copy)).catch(() => {});
+            return res;
+          })
+          .catch(() => cached || caches.match('/'));
+        return cached || network;
+      }),
     );
     return;
   }

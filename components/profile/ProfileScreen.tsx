@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -19,7 +20,8 @@ import { useProfile, useProfileMutations } from '@/hooks/useProfile';
 import { useBodyEntries, useBodyMutations } from '@/hooks/useBody';
 import { BodyEntryForm } from '@/components/body/BodyEntryForm';
 import { SecuritySection } from './SecuritySection';
-import { AvatarCropper } from './AvatarCropper';
+// Canvas pan/zoom cropper — only needed after the user picks a photo.
+const AvatarCropper = dynamic(() => import('./AvatarCropper').then((m) => m.AvatarCropper), { ssr: false });
 import { createClient } from '@/lib/supabase/client';
 import { fmtDateLabel } from '@/lib/utils';
 import { APP_VERSION } from '@/lib/version';
@@ -124,7 +126,7 @@ export function ProfileScreen() {
         >
           <input type="file" accept="image/*" className="sr-only" onChange={onPickAvatar} />
           {profile?.avatar_url ? (
-            <Image src={profile.avatar_url} alt="Аватар" width={72} height={72} unoptimized className="h-[72px] w-[72px] rounded-full object-cover" />
+            <Image src={profile.avatar_url} alt="Аватар" width={72} height={72} sizes="72px" className="h-[72px] w-[72px] rounded-full object-cover" />
           ) : (
             <span
               className="grid h-[72px] w-[72px] place-items-center rounded-full text-[28px] font-bold text-[var(--on-accent)]"
@@ -186,7 +188,7 @@ export function ProfileScreen() {
           <div className="flex gap-2.5 overflow-x-auto no-scrollbar -mx-4 px-4 pb-1">
             {photos.map((e) => (
               <button key={e.id} onClick={() => setLightbox(e.photo_url!)} className="shrink-0 relative">
-                <Image src={e.photo_url!} alt={fmtDateLabel(e.recorded_on)} width={130} height={170} className="h-[170px] w-[130px] object-cover rounded-[16px] border border-[var(--border)]" unoptimized />
+                <Image src={e.photo_url!} alt={fmtDateLabel(e.recorded_on)} width={130} height={170} sizes="130px" className="h-[170px] w-[130px] object-cover rounded-[16px] border border-[var(--border)]" />
                 <span className="absolute bottom-1.5 left-1.5 right-1.5 text-[11px] font-medium text-white bg-black/45 rounded-md px-1.5 py-0.5 backdrop-blur-sm">
                   {fmtDateLabel(e.recorded_on)}{e.weight_kg ? ` · ${e.weight_kg} кг` : ''}
                 </span>
@@ -236,7 +238,9 @@ export function ProfileScreen() {
 
       <ProfileEditForm open={editOpen} onClose={() => setEditOpen(false)} initialName={profile?.name ?? ''} initialHeight={profile?.height_cm ?? null} onSave={saveProfile} />
       <BodyEntryForm open={bodyForm} onClose={() => setBodyForm(false)} />
-      <AvatarCropper file={pickedFile} onCancel={() => setPickedFile(null)} onConfirm={onCropConfirm} />
+      {pickedFile && (
+        <AvatarCropper file={pickedFile} onCancel={() => setPickedFile(null)} onConfirm={onCropConfirm} />
+      )}
       <Lightbox url={lightbox} onClose={() => setLightbox(null)} />
     </div>
   );

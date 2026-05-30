@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Plus, Minus, Trash2, Check, Camera, RotateCcw } from 'lucide-react';
 import { AppHeader } from '@/components/ui/AppHeader';
@@ -16,10 +17,17 @@ import { MUSCLE_LABELS, WEEKLY_TARGET } from '@/lib/muscles';
 import {
   useExercises, usePlan, useSessions, useMuscleVolume, useWorkoutMutations,
 } from '@/hooks/useWorkout';
-import { BodyFigure } from './BodyFigure';
 import { ExercisePicker } from './ExercisePicker';
 import { BodyEntryForm } from '@/components/body/BodyEntryForm';
 import type { Exercise, MuscleId, PlanExercise } from '@/lib/types';
+
+// The muscle-map SVG (~120 path strings) is a heavy client-only leaf behind the
+// "Обзор" tab — split it out of the first-load bundle. The skeleton reserves its
+// height so there is no layout shift.
+const BodyFigure = dynamic(() => import('./BodyFigure').then((m) => m.BodyFigure), {
+  ssr: false,
+  loading: () => <Skeleton className="rounded-[var(--r-xl)]" style={{ height: 420 }} />,
+});
 
 type Tab = 'overview' | 'plan';
 

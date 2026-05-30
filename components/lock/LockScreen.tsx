@@ -55,7 +55,7 @@ export function LockScreen({ onUnlock }: { onUnlock: () => void }) {
             alt=""
             width={88}
             height={88}
-            unoptimized
+            sizes="88px"
             className="h-[88px] w-[88px] rounded-full object-cover shadow-[0_10px_30px_var(--accent-glow)]"
           />
         ) : (
