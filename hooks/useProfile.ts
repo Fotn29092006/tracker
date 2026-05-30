@@ -3,18 +3,22 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { createClient, getUserId } from '@/lib/supabase/client';
 import { uid } from '@/lib/utils';
-import { useUserId } from './useUserId';
 import type { Profile } from '@/lib/types';
 
 const PROFILE_KEY = ['profile'];
 
 export function useProfile() {
-  const userId = useUserId();
   return useQuery({
     queryKey: PROFILE_KEY,
-    enabled: !!userId,
     queryFn: async (): Promise<Profile | null> => {
+      // Read with the reliable session id (getUserId, local — no network), NOT
+      // useUserId()/auth.getUser(): in a standalone PWA getUser() can resolve
+      // to undefined, and with `enabled: !!userId` the profile query then NEVER
+      // ran — so writes landed in the DB but the screen never re-read them
+      // ("saved, but nothing there"). Only the profile read was id-gated; the
+      // other modules read via RLS without an id, which is why they worked.
       const supabase = createClient();
+      const userId = await getUserId();
       const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle();
       if (error) throw error;
       return data as Profile | null;

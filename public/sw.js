@@ -39,7 +39,10 @@
 // error pointing at the avatar_url migration.
 // v27: explicit success/error toast on profile save (name/height) — confirms
 // the write and surfaces any real error (DB verified fine; UPDATE fix in v26).
-const CACHE = 'tracker-shell-v27';
+// v28: REAL profile bug — useProfile read was gated on useUserId()/getUser()
+// which returns undefined in standalone PWA, so the query never ran and saved
+// data never displayed. Read now uses the reliable session id (getUserId).
+const CACHE = 'tracker-shell-v28';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
