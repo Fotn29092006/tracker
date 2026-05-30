@@ -2,10 +2,9 @@
 
 import { useCallback, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ListChecks, Target, ChevronDown } from 'lucide-react';
+import { ListChecks, Target, ChevronDown, Plus } from 'lucide-react';
 import { AppHeader } from '@/components/ui/AppHeader';
 import { Segmented } from '@/components/ui/Segmented';
-import { Fab } from '@/components/ui/Fab';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
 import { ProgressRing } from '@/components/ui/Progress';
@@ -16,7 +15,6 @@ import { cn, fmtDateLabel, isPast, todayISO } from '@/lib/utils';
 import { useTasks, useGoals, useTaskMutations } from '@/hooks/useTodo';
 import { TaskRow } from './TaskRow';
 import { TaskForm } from './TaskForm';
-import { TaskQuickAdd } from './TaskQuickAdd';
 import { GoalForm } from './GoalForm';
 import { GoalDetailSheet } from './GoalDetailSheet';
 import type { Goal, GoalWithProgress, Task } from '@/lib/types';
@@ -32,7 +30,6 @@ export function TasksScreen() {
   const removeMutate = remove.mutate;
 
   const [taskForm, setTaskForm] = useState(false);
-  const [quickAdd, setQuickAdd] = useState(false);
   const [editTask, setEditTask] = useState<Task | null>(null);
   const [goalForm, setGoalForm] = useState(false);
   const [editGoal, setEditGoal] = useState<Goal | null>(null);
@@ -147,18 +144,18 @@ export function TasksScreen() {
                 {goals.map((g) => (
                   <GoalCard key={g.id} goal={g} onOpen={() => setOpenGoalId(g.id)} />
                 ))}
+                <button
+                  onClick={() => { setEditGoal(null); setGoalForm(true); }}
+                  className="flex w-full items-center justify-center gap-1.5 rounded-[var(--r-lg)] border border-dashed border-[var(--border-strong)] py-3.5 text-[14px] font-medium text-[var(--text-muted)] transition-transform active:scale-[0.99]"
+                >
+                  <Plus size={17} /> Новая цель
+                </button>
               </motion.div>
             )}
           </div>
         )}
       </TabPanel>
 
-      <Fab onClick={() => {
-        if (tab === 'tasks') { setQuickAdd(true); }
-        else { setEditGoal(null); setGoalForm(true); }
-      }} />
-
-      <TaskQuickAdd open={quickAdd} onClose={() => setQuickAdd(false)} onAdvanced={() => { setEditTask(null); setTaskForm(true); }} />
       <TaskForm open={taskForm} onClose={() => setTaskForm(false)} task={editTask} goals={goals} />
       <GoalForm open={goalForm} onClose={() => setGoalForm(false)} goal={editGoal} />
       <GoalDetailSheet goal={openGoal} steps={openGoalSteps} onClose={() => setOpenGoalId(null)} onEdit={openEditGoal} />

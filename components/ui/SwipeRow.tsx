@@ -38,7 +38,7 @@ export function SwipeRow({
   if (disabled) return <>{children}</>;
 
   return (
-    <div className="relative overflow-hidden rounded-[var(--r-lg)]">
+    <div data-noswipe className="relative overflow-hidden rounded-[var(--r-lg)]">
       <motion.div
         className="absolute inset-0 flex items-center justify-end pr-6 bg-[var(--negative)] rounded-[var(--r-lg)]"
         style={{ opacity: bgOpacity }}

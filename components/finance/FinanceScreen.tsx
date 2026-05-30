@@ -7,7 +7,6 @@ import {
 } from 'lucide-react';
 import { AppHeader } from '@/components/ui/AppHeader';
 import { Segmented } from '@/components/ui/Segmented';
-import { Fab } from '@/components/ui/Fab';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
 import { ProgressBar } from '@/components/ui/Progress';
@@ -74,12 +73,6 @@ export function FinanceScreen() {
   }, [transactions]);
 
   const accName = useMemo(() => new Map(accounts.map((a) => [a.id, a])), [accounts]);
-
-  function openFab() {
-    if (tab === 'ops') { setEditTx(null); setTxForm(true); }
-    else if (tab === 'debts') { setEditDebt(null); setDebtForm(true); }
-    else { setEditSaving(null); setSavingForm(true); }
-  }
 
   if (accLoading && accounts.length === 0 && transactions.length === 0) {
     return (
@@ -174,8 +167,6 @@ export function FinanceScreen() {
           <Savings goals={savings} currency={currency} onEdit={(g) => { setEditSaving(g); setSavingForm(true); }} onAdd={() => { setEditSaving(null); setSavingForm(true); }} onContribute={setContribute} />
         )}
       </TabPanel>
-
-      <Fab onClick={openFab} />
 
       <AccountForm open={accountForm} onClose={() => setAccountForm(false)} account={editAccount} />
       <TransactionForm open={txForm} onClose={() => setTxForm(false)} accounts={accounts} tx={editTx} onNeedAccount={() => { setEditAccount(null); setAccountForm(true); }} />
@@ -287,6 +278,7 @@ function Debts({
           </div>
         </div>
       )}
+      <AddRow label="Новый долг" onClick={onAdd} />
     </div>
   );
 }
@@ -368,7 +360,21 @@ function Savings({ goals, currency, onEdit, onAdd, onContribute }: {
           </motion.div>
         );
       })}
+      <AddRow label="Новая копилка" onClick={onAdd} />
     </motion.div>
+  );
+}
+
+// Dashed inline "add" affordance (replaces the old per-tab FAB for the
+// secondary finance entities; the floating "+" is now the universal hub).
+function AddRow({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="flex w-full items-center justify-center gap-1.5 rounded-[var(--r-lg)] border border-dashed border-[var(--border-strong)] py-3.5 text-[14px] font-medium text-[var(--text-muted)] transition-transform active:scale-[0.99]"
+    >
+      <Plus size={17} /> {label}
+    </button>
   );
 }
 

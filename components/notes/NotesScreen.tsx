@@ -4,7 +4,6 @@ import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { StickyNote, Pin, Search } from 'lucide-react';
 import { AppHeader } from '@/components/ui/AppHeader';
-import { Fab } from '@/components/ui/Fab';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -69,7 +68,6 @@ export function NotesScreen() {
         </div>
       )}
 
-      <Fab onClick={() => { setEdit(null); setForm(true); }} />
       <NoteForm open={form} onClose={() => setForm(false)} note={edit} />
     </div>
   );

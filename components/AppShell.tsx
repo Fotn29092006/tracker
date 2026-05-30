@@ -1,11 +1,16 @@
 'use client';
 
+import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { TabBar } from '@/components/nav/TabBar';
+import { SwipeNav } from '@/components/nav/SwipeNav';
 import { Sidebar } from '@/components/nav/Sidebar';
 import { OverlaysProvider } from '@/components/ui/Overlays';
 import { ReminderWatcher } from '@/components/ReminderWatcher';
 import { LockGate } from '@/components/lock/LockGate';
 import { AuthGuard } from '@/components/AuthGuard';
+import { Fab } from '@/components/ui/Fab';
+import { QuickCreate } from '@/components/QuickCreate';
 
 // App-shell layout — NATURAL document scroll (not a locked fixed-inset frame).
 //
@@ -17,6 +22,12 @@ import { AuthGuard } from '@/components/AuthGuard';
 // physical bottom (956). So the page scrolls naturally and the TabBar is fixed
 // to the bottom. This mirrors the sibling posuda PWA, which has no gap.
 export function AppShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const [quickOpen, setQuickOpen] = useState(false);
+  // One universal "+" for the whole app (quick-capture hub). Profile has no
+  // quick-create, so the FAB is hidden there.
+  const showFab = pathname !== '/profile';
+
   return (
     <OverlaysProvider>
       <AuthGuard>
@@ -26,11 +37,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Sidebar />
             <main className="flex-1 min-w-0">
               <div className="mx-auto w-full max-w-[640px] px-4 pt-[max(var(--sat),16px)] pb-[calc(92px+var(--sab))]">
-                {children}
+                <SwipeNav>{children}</SwipeNav>
               </div>
             </main>
           </div>
           <TabBar />
+          {showFab && <Fab onClick={() => setQuickOpen(true)} />}
+          <QuickCreate open={quickOpen} onClose={() => setQuickOpen(false)} />
         </LockGate>
       </AuthGuard>
     </OverlaysProvider>

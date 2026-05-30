@@ -60,7 +60,11 @@
 // blank frame) while the session resolves; LockGate seeds `locked` from
 // localStorage in the initializer + renders ONLY the lock (no flash of app
 // content before the PIN screen on cold start).
-const CACHE = 'tracker-shell-v35';
+// v36: universal "+" quick-create hub — one floating FAB (in AppShell) opens a
+// sheet to add Расход/Доход/Задача/Заметка/Тренировка as small animated blocks,
+// no page nav; per-screen FABs removed (goals/debts/savings get inline + rows).
+// Swipe between the main tabs (SwipeNav) + direction-aware page slide.
+const CACHE = 'tracker-shell-v36';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
