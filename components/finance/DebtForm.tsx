@@ -47,7 +47,9 @@ export function DebtForm({ open, onClose, debt }: { open: boolean; onClose: () =
   async function del() {
     if (!debt) return;
     const ok = await confirm({ title: 'Удалить долг?', danger: true, confirmLabel: 'Удалить' });
-    if (ok) { await removeDebt.mutateAsync(debt.id); onClose(); }
+    if (!ok) return;
+    try { await removeDebt.mutateAsync(debt.id); onClose(); }
+    catch { toast('Не удалось удалить', 'error'); }
   }
 
   return (

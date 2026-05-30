@@ -16,6 +16,8 @@ export function currencySymbol(code: string): string {
 
 /** "12 500" — grouped, no decimals unless fractional. */
 export function fmtAmount(n: number): string {
+  // Guard against a corrupt cached value painting "не число"/"∞" in a balance.
+  if (!Number.isFinite(n)) return '0';
   const abs = Math.abs(n);
   const hasFraction = Math.round(abs * 100) % 100 !== 0;
   return new Intl.NumberFormat('ru-RU', {

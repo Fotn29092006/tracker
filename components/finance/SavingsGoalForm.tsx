@@ -55,7 +55,9 @@ export function SavingsGoalForm({
   async function del() {
     if (!goal) return;
     const ok = await confirm({ title: 'Удалить копилку?', danger: true, confirmLabel: 'Удалить' });
-    if (ok) { await removeSaving.mutateAsync(goal.id); onClose(); }
+    if (!ok) return;
+    try { await removeSaving.mutateAsync(goal.id); onClose(); }
+    catch { toast('Не удалось удалить', 'error'); }
   }
 
   return (

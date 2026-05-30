@@ -54,7 +54,9 @@ export function AccountForm({ open, onClose, account }: { open: boolean; onClose
       message: 'Все операции по этому счёту тоже удалятся.',
       danger: true, confirmLabel: 'Удалить',
     });
-    if (ok) { await removeAccount.mutateAsync(account.id); onClose(); }
+    if (!ok) return;
+    try { await removeAccount.mutateAsync(account.id); onClose(); }
+    catch { toast('Не удалось удалить', 'error'); }
   }
 
   return (

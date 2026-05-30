@@ -104,7 +104,7 @@ function Menu({ onPick }: { onPick: (v: View) => void }) {
       <Tile icon={ArrowUpRight} label="Расход" hint="Записать трату" bg="var(--negative-16)" fg="var(--negative)" onClick={() => onPick('expense')} />
       <Tile icon={ArrowDownLeft} label="Доход" hint="Записать доход" bg="var(--positive-16)" fg="var(--positive)" onClick={() => onPick('income')} />
       <Tile icon={ListChecks} label="Задача" hint="Что нужно сделать" bg="var(--accent-12)" fg="var(--accent)" onClick={() => onPick('task')} />
-      <Tile icon={StickyNote} label="Заметка" hint="Быстрая мысль" bg="rgba(255,180,84,0.16)" fg="var(--warning)" onClick={() => onPick('note')} />
+      <Tile icon={StickyNote} label="Заметка" hint="Быстрая мысль" bg="var(--warning-12)" fg="var(--warning)" onClick={() => onPick('note')} />
       <Tile icon={Dumbbell} label="Тренировка" hint="Отметить за сегодня" bg="var(--accent-12)" fg="var(--accent)" wide onClick={() => onPick('workout')} />
     </div>
   );

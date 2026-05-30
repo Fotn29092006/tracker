@@ -1,9 +1,10 @@
 'use client';
 
-// Radial month-spend breakdown by category. Center = month total (k);
-// right = top-5 categories with their share. Segment palette is drawn from the
-// existing token hues (accent / cyan / warning / negative / …).
-const COLORS = ['#5B8CFF', '#46E0D0', '#FFB454', '#FF6B7A', '#9B7CFF', '#3FD37E', '#FF95A4'];
+// Radial month-spend breakdown by category. Center = month total; right = top-5
+// categories with their share. Segment palette is drawn from the design tokens
+// (so it shifts with the light/dark theme); the last two are extension hues with
+// no token equivalent.
+const COLORS = ['var(--accent)', 'var(--accent-cyan)', 'var(--warning)', 'var(--negative)', '#9B7CFF', 'var(--positive)', '#FF95A4'];
 
 export function SpendingWheel({ breakdown, total }: { breakdown: [string, number][]; total: number }) {
   const size = 140;
@@ -43,8 +44,11 @@ export function SpendingWheel({ breakdown, total }: { breakdown: [string, number
           <div>
             <div className="text-[9px] uppercase tracking-[0.14em] text-[var(--text-subtle)]">Месяц</div>
             <div className="num text-[18px] font-bold">
-              {Math.round(total / 1000)}
-              <span className="text-[12px] text-[var(--text-muted)]">k</span>
+              {total >= 1000 ? (
+                <>{Math.round(total / 1000)}<span className="text-[12px] text-[var(--text-muted)]">k</span></>
+              ) : (
+                Math.round(total)
+              )}
             </div>
           </div>
         </div>

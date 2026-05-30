@@ -48,14 +48,16 @@ export function NoteForm({ open, onClose, note }: { open: boolean; onClose: () =
   async function del() {
     if (!note) return;
     const ok = await confirm({ title: 'Удалить заметку?', danger: true, confirmLabel: 'Удалить' });
-    if (ok) { await remove.mutateAsync(note.id); onClose(); }
+    if (!ok) return;
+    try { await remove.mutateAsync(note.id); onClose(); }
+    catch { toast('Не удалось удалить', 'error'); }
   }
 
   return (
     <Sheet
       open={open} onClose={onClose}
       title={editing ? 'Заметка' : 'Новая заметка'}
-      footer={<Button full size="lg" disabled={busy} onClick={submit}>Сохранить</Button>}
+      footer={<Button full size="lg" disabled={busy || !canSave} onClick={submit}>Сохранить</Button>}
     >
       <div className="flex items-center gap-2 mb-3">
         <Input autoFocus placeholder="Заголовок" value={title} onChange={(e) => setTitle(e.target.value)} className="text-[17px] font-semibold" />

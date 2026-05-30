@@ -96,7 +96,7 @@ export function OverlaysProvider({ children }: { children: React.ReactNode }) {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.92, y: 8 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 8 }}
                   transition={spring.snappy}
                   className="relative w-full max-w-[360px] rounded-[24px] bg-[var(--bg-elev)] border border-[var(--border)] p-5 shadow-[var(--shadow-lg)]"
                 >

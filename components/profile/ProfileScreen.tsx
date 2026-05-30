@@ -101,7 +101,7 @@ export function ProfileScreen() {
 
   async function deleteEntry(e: BodyEntry) {
     const ok = await confirm({ title: 'Удалить запись?', danger: true, confirmLabel: 'Удалить' });
-    if (ok) remove.mutate(e.id);
+    if (ok) remove.mutate(e.id, { onError: () => toast('Не удалось удалить', 'error') });
   }
 
   async function saveProfile(p: { name: string; height_cm: number | null }) {
@@ -260,9 +260,9 @@ function ProfileEditForm({
   return (
     <Sheet
       open={open} onClose={onClose} title="Профиль"
-      footer={<Button full size="lg" onClick={() => { onSave({ name: name.trim(), height_cm: height ? parseFloat(height.replace(',', '.')) : null }); onClose(); }}>Сохранить</Button>}
+      footer={<Button full size="lg" disabled={!name.trim()} onClick={() => { onSave({ name: name.trim(), height_cm: height ? parseFloat(height.replace(',', '.')) : null }); onClose(); }}>Сохранить</Button>}
     >
-      <Field label="Имя"><Input value={name} onChange={(e) => setName(e.target.value)} placeholder="Имя" /></Field>
+      <Field label="Имя"><Input autoFocus value={name} onChange={(e) => setName(e.target.value)} placeholder="Имя" /></Field>
       <Field label="Рост, см"><Input inputMode="numeric" value={height} onChange={(e) => setHeight(e.target.value)} placeholder="например, 178" /></Field>
     </Sheet>
   );

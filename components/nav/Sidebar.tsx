@@ -20,9 +20,9 @@ export function Sidebar() {
       <div className="flex items-center gap-2.5 px-3 mb-7">
         <span className="grid h-9 w-9 place-items-end justify-center gap-[3px] rounded-[12px] pb-2" style={{ backgroundImage: 'var(--accent-grad)' }}>
           <span className="flex items-end gap-[2px]">
-            <i className="block w-[3px] h-2 rounded-sm bg-[#07101F]" />
-            <i className="block w-[3px] h-3 rounded-sm bg-[#07101F]" />
-            <i className="block w-[3px] h-4 rounded-sm bg-[#07101F]" />
+            <i className="block w-[3px] h-2 rounded-sm bg-[var(--on-accent)]" />
+            <i className="block w-[3px] h-3 rounded-sm bg-[var(--on-accent)]" />
+            <i className="block w-[3px] h-4 rounded-sm bg-[var(--on-accent)]" />
           </span>
         </span>
         <span className="text-[17px] font-semibold tracking-tight">Трекер</span>

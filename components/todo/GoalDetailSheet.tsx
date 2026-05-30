@@ -26,16 +26,19 @@ export function GoalDetailSheet({
 }) {
   const tasks = useTaskMutations();
   const goals = useGoalMutations();
-  const { confirm } = useOverlays();
+  const { confirm, toast } = useOverlays();
   const [newStep, setNewStep] = useState('');
 
   if (!goal) return null;
   const ratio = goal.total ? goal.done / goal.total : 0;
 
   async function addStep() {
-    if (!newStep.trim() || !goal) return;
-    await tasks.add.mutateAsync({ title: newStep, goal_id: goal.id });
-    setNewStep('');
+    const title = newStep.trim();
+    if (!title || !goal) return;
+    try {
+      await tasks.add.mutateAsync({ title, goal_id: goal.id });
+      setNewStep('');
+    } catch { toast('Не удалось добавить', 'error'); }
   }
 
   async function removeGoal() {
@@ -46,7 +49,9 @@ export function GoalDetailSheet({
       danger: true,
       confirmLabel: 'Удалить',
     });
-    if (ok) { await goals.remove.mutateAsync(goal.id); onClose(); }
+    if (!ok) return;
+    try { await goals.remove.mutateAsync(goal.id); onClose(); }
+    catch { toast('Не удалось удалить', 'error'); }
   }
 
   return (
@@ -112,7 +117,7 @@ export function GoalDetailSheet({
           onChange={(e) => setNewStep(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addStep(); } }}
         />
-        <Button size="md" disabled={!newStep.trim()} onClick={addStep} className="shrink-0 !px-3">
+        <Button size="md" disabled={!newStep.trim() || tasks.add.isPending} onClick={addStep} className="shrink-0 !px-3">
           <Plus size={20} />
         </Button>
       </div>

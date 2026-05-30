@@ -70,7 +70,9 @@ export function WorkoutScreen() {
     const s = sessions.find((x) => x.performed_on === today);
     if (!s) return;
     const ok = await confirm({ title: 'Отменить тренировку?', message: 'Сегодняшняя запись удалится.', danger: true, confirmLabel: 'Отменить' });
-    if (ok) await removeSession.mutateAsync(s.id);
+    if (!ok) return;
+    try { await removeSession.mutateAsync(s.id); }
+    catch { toast('Не удалось отменить', 'error'); }
   }
 
   function onPick(ex: Exercise) {

@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/Button';
 import { ProgressBar } from '@/components/ui/Progress';
 import { Sheet } from '@/components/ui/Sheet';
 import { AmountInput } from '@/components/ui/Field';
+import { useOverlays } from '@/components/ui/Overlays';
 import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
 import { TabPanel } from '@/components/ui/TabPanel';
 import { Skeleton, SkeletonList } from '@/components/ui/Skeleton';
@@ -36,6 +37,7 @@ export function FinanceScreen() {
   const { data: debts = [] } = useDebts();
   const { data: savings = [] } = useSavingsGoals();
   const { updateSaving, updateDebt } = useFinanceMutations();
+  const { toast } = useOverlays();
 
   const [tab, setTab] = useState<Tab>('ops');
   const [accountForm, setAccountForm] = useState(false);
@@ -161,7 +163,10 @@ export function FinanceScreen() {
         )}
         {tab === 'debts' && (
           <Debts debts={debts} currency={currency} onEdit={(d) => { setEditDebt(d); setDebtForm(true); }} onAdd={() => { setEditDebt(null); setDebtForm(true); }}
-            onSettle={(d) => updateDebt.mutate({ id: d.id, patch: { settled_at: d.settled_at ? null : new Date().toISOString() } })} />
+            onSettle={(d) => updateDebt.mutate(
+            { id: d.id, patch: { settled_at: d.settled_at ? null : new Date().toISOString() } },
+            { onError: () => toast('Не удалось обновить', 'error') },
+          )} />
         )}
         {tab === 'savings' && (
           <Savings goals={savings} currency={currency} onEdit={(g) => { setEditSaving(g); setSavingForm(true); }} onAdd={() => { setEditSaving(null); setSavingForm(true); }} onContribute={setContribute} />
@@ -175,12 +180,15 @@ export function FinanceScreen() {
 
       <ContributeSheet
         goal={contribute}
+        busy={updateSaving.isPending}
         onClose={() => setContribute(null)}
-        onConfirm={async (add) => {
+        onConfirm={async (addAmount) => {
           if (!contribute) return;
-          const next = Math.max(0, contribute.saved_amount + add);
-          await updateSaving.mutateAsync({ id: contribute.id, patch: { saved_amount: next, done_at: next >= contribute.target_amount ? new Date().toISOString() : null } });
-          setContribute(null);
+          const next = Math.max(0, contribute.saved_amount + addAmount);
+          try {
+            await updateSaving.mutateAsync({ id: contribute.id, patch: { saved_amount: next, done_at: next >= contribute.target_amount ? new Date().toISOString() : null } });
+            setContribute(null);
+          } catch { toast('Не удалось сохранить', 'error'); }
         }}
       />
     </div>
@@ -379,8 +387,8 @@ function AddRow({ label, onClick }: { label: string; onClick: () => void }) {
 }
 
 // ── Contribute sheet ────────────────────────────────────
-function ContributeSheet({ goal, onClose, onConfirm }: {
-  goal: SavingsGoal | null; onClose: () => void; onConfirm: (add: number) => void;
+function ContributeSheet({ goal, busy, onClose, onConfirm }: {
+  goal: SavingsGoal | null; busy?: boolean; onClose: () => void; onConfirm: (add: number) => void;
 }) {
   const [val, setVal] = useState('');
   const num = parseFloat(val.replace(',', '.')) || 0;
@@ -388,7 +396,7 @@ function ContributeSheet({ goal, onClose, onConfirm }: {
     <Sheet
       open={!!goal} onClose={() => { setVal(''); onClose(); }}
       title={goal ? `Внести в «${goal.title}»` : ''}
-      footer={<Button full size="lg" disabled={num <= 0} onClick={() => { onConfirm(num); setVal(''); }}>Внести</Button>}
+      footer={<Button full size="lg" disabled={num <= 0 || busy} onClick={() => { onConfirm(num); setVal(''); }}>Внести</Button>}
     >
       <AmountInput autoFocus placeholder="0" value={val} onChange={(e) => setVal(e.target.value)} />
       {goal && <p className="mt-3 text-[13px] text-[var(--text-muted)]">Сейчас накоплено: <span className="num">{fmtAmount(goal.saved_amount)}</span></p>}

@@ -57,7 +57,11 @@ export function GoalForm({
       footer={<Button full size="lg" disabled={busy || !title.trim()} onClick={submit}>{editing ? 'Сохранить' : 'Создать'}</Button>}
     >
       <Field>
-        <Input autoFocus placeholder="Например: выучить английский" value={title} onChange={(e) => setTitle(e.target.value)} />
+        <Input
+          autoFocus placeholder="Например: выучить английский" value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); submit(); } }}
+        />
       </Field>
       <Field label="Описание">
         <Textarea rows={2} placeholder="Зачем эта цель (необязательно)" value={note} onChange={(e) => setNote(e.target.value)} />
