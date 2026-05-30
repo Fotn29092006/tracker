@@ -101,7 +101,12 @@
 // signed entrance distance.
 // v43: per-tab scroll memory — returning to a tab lands where you left it (like
 // a native tab bar) instead of jumping to the top every time.
-const CACHE = 'tracker-shell-v43';
+// v44: dual-mode — opened inside Telegram as a Mini App, tracker gets REAL
+// native haptics (Telegram.WebApp.HapticFeedback) + native gestures/webview,
+// the "feels like an app" layer a bare iOS PWA can't reach (same path the posuda
+// app rides). Outside Telegram it's an unchanged offline-first PWA (no external
+// SDK loaded).
+const CACHE = 'tracker-shell-v44';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

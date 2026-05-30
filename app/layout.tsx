@@ -5,6 +5,7 @@ import { GeistMono } from 'geist/font/mono';
 import { Providers } from '@/components/providers';
 import { ThemeProvider } from '@/components/theme-provider';
 import { ServiceWorkerRegister } from '@/components/ServiceWorkerRegister';
+import { TelegramInit } from '@/components/TelegramInit';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -53,6 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ThemeProvider>{children}</ThemeProvider>
         </Providers>
         <ServiceWorkerRegister />
+        <TelegramInit />
       </body>
     </html>
   );
