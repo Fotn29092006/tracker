@@ -43,7 +43,8 @@
 // which returns undefined in standalone PWA, so the query never ran and saved
 // data never displayed. Read now uses the reliable session id (getUserId).
 // v29: avatar cropper — pan + zoom in a circle, exports a framed JPEG.
-const CACHE = 'tracker-shell-v29';
+// v30: redesign #9 — LockScreen with 88px avatar + greeting; PIN dots glow.
+const CACHE = 'tracker-shell-v30';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

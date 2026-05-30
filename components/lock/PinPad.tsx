@@ -20,7 +20,7 @@ export function PinPad({
   onChange: (next: string) => void;
   error?: boolean;
   onBiometric?: () => void;
-  title: string;
+  title?: string;
   subtitle?: string;
 }) {
   const press = (d: string) => { if (value.length < PIN_LENGTH) { haptics.soft(); onChange(value + d); } };
@@ -28,8 +28,8 @@ export function PinPad({
 
   return (
     <div className="flex flex-col items-center">
-      <p className="text-[19px] font-semibold">{title}</p>
-      {subtitle && <p className="mt-1 text-[14px] text-[var(--text-muted)]">{subtitle}</p>}
+      {title && <p className="text-[19px] font-semibold">{title}</p>}
+      {subtitle && <p className="text-[14px] text-[var(--text-muted)]">{subtitle}</p>}
 
       {/* dots */}
       <motion.div
@@ -40,6 +40,7 @@ export function PinPad({
         {Array.from({ length: PIN_LENGTH }).map((_, i) => (
           <span
             key={i}
+            style={i < value.length && !error ? { boxShadow: '0 0 10px 1px var(--accent-glow)' } : undefined}
             className={cn(
               'h-3.5 w-3.5 rounded-full border-2 transition-colors',
               i < value.length

@@ -2,15 +2,19 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { PinPad } from './PinPad';
+import { useProfile } from '@/hooks/useProfile';
 import { verifyPin, hasBiometric, biometricUnlock, PIN_LENGTH } from '@/lib/lock';
 import { haptics } from '@/lib/haptics';
 
 // Full-screen opaque overlay shown while the app is locked.
 export function LockScreen({ onUnlock }: { onUnlock: () => void }) {
+  const { data: profile } = useProfile();
   const [value, setValue] = useState('');
   const [error, setError] = useState(false);
   const bio = hasBiometric();
+  const name = profile?.name?.split(' ')[0] || '';
 
   const tryBio = useCallback(async () => {
     if (!bio) return;
@@ -36,25 +40,39 @@ export function LockScreen({ onUnlock }: { onUnlock: () => void }) {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="fixed inset-0 z-[80] bg-[var(--bg)] flex flex-col items-center justify-center px-6"
+      className="fixed inset-0 z-[80] flex flex-col items-center justify-center bg-[var(--bg)] px-6"
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-20 left-1/2 -translate-x-1/2 h-[360px] w-[360px] rounded-full blur-[120px] opacity-30"
+        className="pointer-events-none absolute -top-20 left-1/2 h-[360px] w-[360px] -translate-x-1/2 rounded-full opacity-30 blur-[120px]"
         style={{ backgroundImage: 'var(--accent-grad)' }}
       />
-      <div className="relative">
-        <div className="flex justify-center mb-8">
-          <span className="grid h-12 w-12 place-items-center rounded-[16px]" style={{ backgroundImage: 'var(--accent-grad)' }}>
-            <span className="flex items-end gap-[3px] pb-1">
-              <i className="block w-1 h-2.5 rounded-sm bg-[#07101F]" />
-              <i className="block w-1 h-4 rounded-sm bg-[#07101F]" />
-              <i className="block w-1 h-5 rounded-sm bg-[#07101F]" />
-            </span>
+
+      <div className="relative flex flex-col items-center">
+        {profile?.avatar_url ? (
+          <Image
+            src={profile.avatar_url}
+            alt=""
+            width={88}
+            height={88}
+            unoptimized
+            className="h-[88px] w-[88px] rounded-full object-cover shadow-[0_10px_30px_var(--accent-glow)]"
+          />
+        ) : (
+          <span
+            className="grid h-[88px] w-[88px] place-items-center rounded-full text-[32px] font-bold text-[var(--on-accent)] shadow-[0_10px_30px_var(--accent-glow)]"
+            style={{ backgroundImage: 'var(--accent-grad)' }}
+          >
+            {(name || '?').slice(0, 1).toUpperCase()}
           </span>
-        </div>
+        )}
+
+        <h1 className="mt-5 mb-1 text-[24px] font-bold tracking-tight">
+          {name ? `С возвращением, ${name}` : 'С возвращением'}
+        </h1>
+
         <PinPad
-          title="Введите код"
+          subtitle="Введите код-пароль"
           value={value}
           onChange={setValue}
           error={error}
