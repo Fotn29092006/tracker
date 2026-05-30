@@ -8,14 +8,12 @@ import { LockScreen } from './LockScreen';
 const GRACE_MS = 30_000;
 
 export function LockGate({ children }: { children: React.ReactNode }) {
-  const [locked, setLocked] = useState(false);
-  const [ready, setReady] = useState(false);
+  // hasPin() reads localStorage synchronously. LockGate only renders on the
+  // client (AuthGuard returns a splash on the server / pre-session), so seeding
+  // `locked` in the initializer is safe and avoids painting the app for a frame
+  // before the lock drops.
+  const [locked, setLocked] = useState(() => hasPin());
   const hiddenAt = useRef<number | null>(null);
-
-  useEffect(() => {
-    setLocked(hasPin());
-    setReady(true);
-  }, []);
 
   useEffect(() => {
     const onVisibility = () => {
@@ -32,10 +30,8 @@ export function LockGate({ children }: { children: React.ReactNode }) {
     return () => document.removeEventListener('visibilitychange', onVisibility);
   }, []);
 
-  return (
-    <>
-      {children}
-      {ready && locked && <LockScreen onUnlock={() => setLocked(false)} />}
-    </>
-  );
+  // Render ONLY the lock when locked — never paint the app underneath (privacy +
+  // no flash of content before the lock on cold start).
+  if (locked) return <LockScreen onUnlock={() => setLocked(false)} />;
+  return <>{children}</>;
 }

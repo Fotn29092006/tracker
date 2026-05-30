@@ -5,6 +5,7 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 import { MotionConfig } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { queryPersister } from '@/lib/queryPersister';
+import { Splash } from '@/components/ui/Splash';
 
 // Offline-first wiring:
 //  • networkMode 'offlineFirst' → queries serve cache immediately and
@@ -72,18 +73,4 @@ function RestoreGate({ children }: { children: React.ReactNode }) {
   useEffect(() => setMounted(true), []);
   if (!mounted || restoring) return <Splash />;
   return <>{children}</>;
-}
-
-function Splash() {
-  return (
-    <div className="fixed inset-0 z-[90] grid place-items-center bg-[var(--bg)]">
-      <span className="grid h-14 w-14 place-items-center rounded-[18px]" style={{ backgroundImage: 'var(--accent-grad)' }}>
-        <span className="flex items-end gap-[3px] pb-1">
-          <i className="block h-2.5 w-1 rounded-sm bg-[#07101F]" />
-          <i className="block h-4 w-1 rounded-sm bg-[#07101F]" />
-          <i className="block h-5 w-1 rounded-sm bg-[#07101F]" />
-        </span>
-      </span>
-    </div>
-  );
 }

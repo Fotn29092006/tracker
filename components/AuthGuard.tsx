@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { isSupabaseConfigured } from '@/lib/supabase/config';
+import { Splash } from '@/components/ui/Splash';
 
 // Client-side auth gate. Keeps navigation a pure SPA (no per-route server
 // round-trip), so screen-to-screen is instant. Data is still protected by
@@ -31,6 +32,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     return () => { active = false; sub.subscription.unsubscribe(); };
   }, [router]);
 
-  if (!ready) return null;
+  // Splash (not null) while the session resolves → seamless with the restore
+  // splash, no blank frame before content.
+  if (!ready) return <Splash />;
   return <>{children}</>;
 }

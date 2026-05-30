@@ -56,7 +56,11 @@
 // for instant cold launch.
 // v34: launch splash gate — hold a logo splash until the idb cache restores,
 // so cold launch is splash -> content (no empty -> skeleton -> data flash).
-const CACHE = 'tracker-shell-v34';
+// v35: deep perf pass 3 — synchronous gates: AuthGuard shows the splash (not a
+// blank frame) while the session resolves; LockGate seeds `locked` from
+// localStorage in the initializer + renders ONLY the lock (no flash of app
+// content before the PIN screen on cold start).
+const CACHE = 'tracker-shell-v35';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
