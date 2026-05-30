@@ -87,7 +87,8 @@ export function SavingsGoalForm({
             <Chip active={accountId === null} onClick={() => setAccountId(null)}>Не привязан</Chip>
             {accounts.map((a) => (
               <Chip key={a.id} active={accountId === a.id} onClick={() => setAccountId(a.id)}>
-                <span className="h-2 w-2 rounded-full" style={{ background: a.color }} />{a.name}
+                <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: a.color }} />
+                <span className="max-w-[150px] truncate">{a.name}</span>
               </Chip>
             ))}
           </div>

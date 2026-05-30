@@ -64,7 +64,13 @@
 // sheet to add Расход/Доход/Задача/Заметка/Тренировка as small animated blocks,
 // no page nav; per-screen FABs removed (goals/debts/savings get inline + rows).
 // Swipe between the main tabs (SwipeNav) + direction-aware page slide.
-const CACHE = 'tracker-shell-v36';
+// v37: polish pass (audit-driven). 1/ correctness: light-theme tokens (logo bars,
+// spending wheel, note tints), no silent failures (try/catch+toast on every
+// delete/contribute/settle/undo), guards (pending, empty name, NaN fmtAmount).
+// 2/ motion: springs unified to tokens (Button/Check/Fab/TabBar/hero), debt-
+// settle + account balances animate, lightbox/PIN easing tokenized. 3/ visual:
+// Profile cold-start skeleton + section-header style; chip name truncation.
+const CACHE = 'tracker-shell-v37';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

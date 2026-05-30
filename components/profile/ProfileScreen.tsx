@@ -14,6 +14,7 @@ import { Field, Input } from '@/components/ui/Field';
 import { Button } from '@/components/ui/Button';
 import { Segmented } from '@/components/ui/Segmented';
 import { Sparkline } from '@/components/ui/Sparkline';
+import { Skeleton } from '@/components/ui/Skeleton';
 import { useOverlays } from '@/components/ui/Overlays';
 import { useTheme } from '@/components/theme-provider';
 import { spring } from '@/lib/motion';
@@ -32,9 +33,9 @@ const kgFormat = (n: number) => (Math.round(n * 10) / 10).toString();
 
 export function ProfileScreen() {
   const router = useRouter();
-  const { data: profile } = useProfile();
+  const { data: profile, isLoading: profileLoading } = useProfile();
   const { update, uploadAvatar } = useProfileMutations();
-  const { data: entries = [] } = useBodyEntries();
+  const { data: entries = [], isLoading: entriesLoading } = useBodyEntries();
   const { remove } = useBodyMutations();
   const { mode, setMode } = useTheme();
   const { confirm, toast } = useOverlays();
@@ -115,6 +116,24 @@ export function ProfileScreen() {
     }
   }
 
+  const firstLoad = (profileLoading || entriesLoading) && !profile && entries.length === 0;
+  if (firstLoad) {
+    return (
+      <div>
+        <AppHeader title="Профиль" />
+        <div className="flex items-center gap-4 mb-5">
+          <Skeleton className="rounded-full" style={{ height: 72, width: 72 }} />
+          <div className="flex-1 space-y-2">
+            <Skeleton style={{ height: 22, width: '55%' }} />
+            <Skeleton style={{ height: 14, width: '38%' }} />
+          </div>
+        </div>
+        <Skeleton className="rounded-[var(--r-xl)] mb-4" style={{ height: 150 }} />
+        <Skeleton className="rounded-[var(--r-xl)]" style={{ height: 116 }} />
+      </div>
+    );
+  }
+
   return (
     <div>
       <AppHeader title="Профиль" />
@@ -185,7 +204,7 @@ export function ProfileScreen() {
       {/* Progress photos */}
       {photos.length > 0 && (
         <div className="mb-4">
-          <p className="text-[15px] font-semibold mb-2.5 px-1">Прогресс</p>
+          <p className="mb-2 px-1 text-[13px] font-semibold uppercase tracking-wide text-[var(--text-subtle)]">Прогресс</p>
           <div className="flex gap-2.5 overflow-x-auto no-scrollbar -mx-4 px-4 pb-1">
             {photos.map((e) => (
               <button key={e.id} onClick={() => setLightbox(e.photo_url!)} className="shrink-0 relative">
@@ -202,7 +221,7 @@ export function ProfileScreen() {
       {/* History list */}
       {entries.length > 0 && (
         <div className="mb-4">
-          <p className="text-[15px] font-semibold mb-2.5 px-1">Записи</p>
+          <p className="mb-2 px-1 text-[13px] font-semibold uppercase tracking-wide text-[var(--text-subtle)]">Записи</p>
           <div className="space-y-2">
             {entries.slice(0, 20).map((e) => (
               <div key={e.id} className="flex items-center gap-3 rounded-[var(--r-md)] bg-[var(--surface)] border border-[var(--border)] p-3">
