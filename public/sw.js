@@ -70,7 +70,10 @@
 // 2/ motion: springs unified to tokens (Button/Check/Fab/TabBar/hero), debt-
 // settle + account balances animate, lightbox/PIN easing tokenized. 3/ visual:
 // Profile cold-start skeleton + section-header style; chip name truncation.
-const CACHE = 'tracker-shell-v37';
+// v38: polish pass 2 — quick-hub blocks spring on press + success toasts after
+// each quick add; sparkline trend draws in (pathLength); workout-plan mutations
+// surface errors; EmptyState + goal-step radii tokenized.
+const CACHE = 'tracker-shell-v38';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

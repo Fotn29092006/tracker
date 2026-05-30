@@ -22,7 +22,7 @@ export function EmptyState({
       transition={{ duration: 0.4, ease: ease.out }}
       className="flex flex-col items-center text-center px-8 py-16"
     >
-      <div className="grid h-16 w-16 place-items-center rounded-[20px] bg-[var(--surface-alt)] text-[var(--text-subtle)] mb-4">
+      <div className="grid h-16 w-16 place-items-center rounded-[var(--r-lg)] bg-[var(--surface-alt)] text-[var(--text-subtle)] mb-4">
         <Icon size={28} strokeWidth={1.75} />
       </div>
       <p className="text-[16px] font-semibold text-[var(--text)]">{title}</p>

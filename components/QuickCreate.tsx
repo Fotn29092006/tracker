@@ -19,7 +19,7 @@ import { usePlan, useSessions, useWorkoutMutations } from '@/hooks/useWorkout';
 import { parseQuickTask } from '@/lib/parseQuickTask';
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from '@/lib/categories';
 import { NOTE_TONES, NOTE_COLOR_ORDER } from '@/components/notes/noteColors';
-import { ease } from '@/lib/motion';
+import { ease, spring } from '@/lib/motion';
 import { haptics } from '@/lib/haptics';
 import { cn, fmtDateLabel, todayISO, WEEKDAYS_FULL } from '@/lib/utils';
 import type { NoteColor } from '@/lib/types';
@@ -116,10 +116,12 @@ function Tile({
   icon: LucideIcon; label: string; hint: string; bg: string; fg: string; wide?: boolean; onClick: () => void;
 }) {
   return (
-    <button
+    <motion.button
       onClick={onClick}
+      whileTap={{ scale: 0.97 }}
+      transition={spring.snappy}
       className={cn(
-        'flex flex-col items-start gap-2.5 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)] p-4 text-left transition-transform active:scale-[0.97]',
+        'flex flex-col items-start gap-2.5 rounded-[var(--r-lg)] border border-[var(--border)] bg-[var(--surface)] p-4 text-left',
         wide && 'col-span-2 flex-row items-center gap-3.5',
       )}
     >
@@ -130,7 +132,7 @@ function Tile({
         <span className="block text-[15px] font-semibold">{label}</span>
         <span className="block text-[12px] text-[var(--text-subtle)]">{hint}</span>
       </span>
-    </button>
+    </motion.button>
   );
 }
 
@@ -167,6 +169,7 @@ function TxQuick({ kind, onClose }: { kind: 'expense' | 'income'; onClose: () =>
         category: category.trim() || null, note: null, occurred_on: todayISO(),
       });
       haptics.success();
+      toast(kind === 'income' ? 'Доход добавлен' : 'Расход добавлен', 'success');
       onClose();
     } catch { toast('Не удалось сохранить', 'error'); }
   }
@@ -230,6 +233,7 @@ function TaskQuick({ onClose }: { onClose: () => void }) {
     try {
       await add.mutateAsync({ title: parsed.cleanTitle, note, due_date: parsed.due ?? null, reminder_at });
       haptics.success();
+      toast('Задача добавлена', 'success');
       onClose();
     } catch { toast('Не удалось сохранить', 'error'); }
   }
@@ -285,6 +289,7 @@ function NoteQuick({ onClose }: { onClose: () => void }) {
     try {
       await add.mutateAsync({ title: title.trim() || 'Без названия', body: body.trim() || null, color });
       haptics.success();
+      toast('Заметка сохранена', 'success');
       onClose();
     } catch { toast('Не удалось сохранить', 'error'); }
   }
@@ -336,6 +341,7 @@ function WorkoutQuick({ onClose }: { onClose: () => void }) {
     try {
       await completeDay.mutateAsync({ day_of_week: dow, date: today, planItems: todayPlan });
       haptics.success();
+      toast('Тренировка засчитана 💪', 'success');
       onClose();
     } catch { toast('Не удалось сохранить', 'error'); }
   }

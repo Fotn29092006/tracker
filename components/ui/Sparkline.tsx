@@ -1,6 +1,8 @@
 'use client';
 
 import { useId } from 'react';
+import { motion } from 'framer-motion';
+import { ease } from '@/lib/motion';
 
 // Minimal trend line. `points` are chronological values (oldest → newest).
 // Renders responsively: the SVG stretches to its container width while the
@@ -39,8 +41,12 @@ export function Sparkline({
           <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
         </linearGradient>
       </defs>
-      <path d={area} fill={`url(#spark-${uid})`} />
-      <path
+      <motion.path
+        d={area} fill={`url(#spark-${uid})`}
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, ease: ease.out }}
+      />
+      <motion.path
         d={d}
         fill="none"
         stroke="var(--accent)"
@@ -48,6 +54,8 @@ export function Sparkline({
         strokeLinecap="round"
         strokeLinejoin="round"
         vectorEffect="non-scaling-stroke"
+        initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
+        transition={{ duration: 0.7, ease: ease.out }}
       />
     </svg>
   );

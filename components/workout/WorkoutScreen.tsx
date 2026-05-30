@@ -78,7 +78,10 @@ export function WorkoutScreen() {
   function onPick(ex: Exercise) {
     if (pickerDay === null) return;
     const count = plan.filter((p) => p.day_of_week === pickerDay).length;
-    addPlanExercise.mutate({ day_of_week: pickerDay, exercise_id: ex.id, sets: 3, reps: 10, position: count });
+    addPlanExercise.mutate(
+      { day_of_week: pickerDay, exercise_id: ex.id, sets: 3, reps: 10, position: count },
+      { onError: () => toast('Не удалось добавить', 'error') },
+    );
   }
 
   const firstLoad = (exLoading || planLoading || sessionsLoading)
@@ -205,8 +208,8 @@ export function WorkoutScreen() {
                   exMap={exMap}
                   isToday={dow === todayDow}
                   onAdd={() => setPickerDay(dow)}
-                  onUpdate={(id, patch) => updatePlanExercise.mutate({ id, patch })}
-                  onRemove={(id) => removePlanExercise.mutate(id)}
+                  onUpdate={(id, patch) => updatePlanExercise.mutate({ id, patch }, { onError: () => toast('Не удалось обновить', 'error') })}
+                  onRemove={(id) => removePlanExercise.mutate(id, { onError: () => toast('Не удалось удалить', 'error') })}
                 />
               );
             })}

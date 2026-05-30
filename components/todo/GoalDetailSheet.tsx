@@ -93,7 +93,7 @@ export function GoalDetailSheet({
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 8 }}
-              className="flex items-center gap-3 rounded-[14px] bg-[var(--surface)] border border-[var(--border)] px-3 py-2.5"
+              className="flex items-center gap-3 rounded-[var(--r-md)] bg-[var(--surface)] border border-[var(--border)] px-3 py-2.5"
             >
               <Check size={22} checked={!!s.done_at} onChange={() => tasks.toggle.mutate(s)} />
               <span className={cn('flex-1 text-[14px]', s.done_at ? 'line-through text-[var(--text-subtle)]' : 'text-[var(--text)]')}>
