@@ -94,7 +94,12 @@
 // list-row radius (task rows --r-lg->--r-md to match finance/profile rows),
 // tokenized stray radii, aligned confirm to the sheet, restored the warning
 // note's border (new --warning-20 token).
-const CACHE = 'tracker-shell-v41';
+// v42: keyboard no longer hides the Save button — sheets lift above the iOS
+// keyboard via VisualViewport (animated padding). Smoother swipe hand-off: the
+// incoming page now enters from a larger offset on a committed swipe (reads as a
+// continuation of the drag) while taps stay calm; navDirection carries the
+// signed entrance distance.
+const CACHE = 'tracker-shell-v42';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

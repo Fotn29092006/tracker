@@ -89,7 +89,7 @@ export function SwipeNav({ children }: { children: React.ReactNode }) {
       const commit = !!target && (Math.abs(dx) > w * COMMIT_FRACTION || velocity > COMMIT_VELOCITY);
 
       if (commit) {
-        navDirection.set(dir);
+        navDirection.set(dir, 120); // larger entrance offset → reads as a continued swipe
         haptics.soft();
         // Leave the page at the drag offset; the iso-layout reset swaps it for
         // the incoming page (which slides in via the route template).

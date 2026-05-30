@@ -1,7 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion, type PanInfo } from 'framer-motion';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ease } from '@/lib/motion';
@@ -19,6 +19,23 @@ type Props = {
 
 export function Sheet({ open, onClose, title, children, footer }: Props) {
   const panelRef = useRef<HTMLDivElement>(null);
+  // Lift the sheet above the on-screen keyboard. `dvh` doesn't shrink for the
+  // keyboard, so without this the footer (Save) sits behind it. The VisualViewport
+  // gives the real keyboard height; we pad the bottom by it (animated).
+  const [kb, setKb] = useState(0);
+  useEffect(() => {
+    if (!open) { setKb(0); return; }
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const onResize = () => setKb(Math.max(0, window.innerHeight - vv.height - vv.offsetTop));
+    onResize();
+    vv.addEventListener('resize', onResize);
+    vv.addEventListener('scroll', onResize);
+    return () => {
+      vv.removeEventListener('resize', onResize);
+      vv.removeEventListener('scroll', onResize);
+    };
+  }, [open]);
 
   // Lock the document scroll (the page now scrolls naturally) so the background
   // can't move under the sheet.
@@ -74,7 +91,10 @@ export function Sheet({ open, onClose, title, children, footer }: Props) {
     <Portal>
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-50 flex flex-col justify-end">
+        <div
+          className="fixed inset-0 z-50 flex flex-col justify-end"
+          style={{ paddingBottom: kb, transition: 'padding-bottom 0.25s ease', ['--kb' as string]: `${kb}px` } as React.CSSProperties}
+        >
           <motion.div
             className="absolute inset-0 bg-black/55"
             initial={{ opacity: 0 }}
@@ -93,7 +113,7 @@ export function Sheet({ open, onClose, title, children, footer }: Props) {
               'relative w-full max-w-[560px] mx-auto outline-none',
               'bg-[var(--bg-elev)] border-t border-[var(--border)]',
               'rounded-t-[26px] shadow-[var(--shadow-sheet)]',
-              'flex flex-col max-h-[92dvh]',
+              'flex flex-col max-h-[calc(92dvh-var(--kb,0px))]',
             )}
             initial={{ y: '100%' }}
             animate={{ y: 0 }}

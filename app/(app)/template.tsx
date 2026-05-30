@@ -13,7 +13,7 @@ import { ease } from '@/lib/motion';
 // once on mount (useState initializer) and resetting it in the effect keeps a
 // later plain <Link> nav on a clean fade.
 export default function Template({ children }: { children: React.ReactNode }) {
-  const [dir] = useState(() => navDirection.get());
+  const [enterX] = useState(() => navDirection.get());
 
   useEffect(() => {
     navDirection.set(0);
@@ -23,7 +23,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: dir * 34 }}
+      initial={{ opacity: 0, x: enterX }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.34, ease: ease.out }}
     >
