@@ -99,7 +99,9 @@
 // incoming page now enters from a larger offset on a committed swipe (reads as a
 // continuation of the drag) while taps stay calm; navDirection carries the
 // signed entrance distance.
-const CACHE = 'tracker-shell-v42';
+// v43: per-tab scroll memory — returning to a tab lands where you left it (like
+// a native tab bar) instead of jumping to the top every time.
+const CACHE = 'tracker-shell-v43';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
