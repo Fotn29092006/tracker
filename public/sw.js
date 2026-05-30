@@ -54,7 +54,9 @@
 // v33: deep perf pass 2 — code-split BodyFigure + AvatarCropper (next/dynamic),
 // optimise Supabase avatar/progress images (drop unoptimized), SWR navigation
 // for instant cold launch.
-const CACHE = 'tracker-shell-v33';
+// v34: launch splash gate — hold a logo splash until the idb cache restores,
+// so cold launch is splash -> content (no empty -> skeleton -> data flash).
+const CACHE = 'tracker-shell-v34';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

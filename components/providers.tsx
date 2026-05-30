@@ -1,6 +1,6 @@
 'use client';
 
-import { QueryClient, onlineManager } from '@tanstack/react-query';
+import { QueryClient, onlineManager, useIsRestoring } from '@tanstack/react-query';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { MotionConfig } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -55,7 +55,35 @@ export function Providers({ children }: { children: React.ReactNode }) {
         },
       }}
     >
-      <MotionConfig reducedMotion="user">{children}</MotionConfig>
+      <MotionConfig reducedMotion="user">
+        <RestoreGate>{children}</RestoreGate>
+      </MotionConfig>
     </PersistQueryClientProvider>
+  );
+}
+
+// Hold a launch splash until the IndexedDB cache has restored, so screens go
+// straight from splash → content instead of flashing empty → skeleton → data
+// on every cold launch. The `mounted` guard makes the first client render match
+// the server output (splash), avoiding any hydration mismatch.
+function RestoreGate({ children }: { children: React.ReactNode }) {
+  const restoring = useIsRestoring();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted || restoring) return <Splash />;
+  return <>{children}</>;
+}
+
+function Splash() {
+  return (
+    <div className="fixed inset-0 z-[90] grid place-items-center bg-[var(--bg)]">
+      <span className="grid h-14 w-14 place-items-center rounded-[18px]" style={{ backgroundImage: 'var(--accent-grad)' }}>
+        <span className="flex items-end gap-[3px] pb-1">
+          <i className="block h-2.5 w-1 rounded-sm bg-[#07101F]" />
+          <i className="block h-4 w-1 rounded-sm bg-[#07101F]" />
+          <i className="block h-5 w-1 rounded-sm bg-[#07101F]" />
+        </span>
+      </span>
+    </div>
   );
 }
