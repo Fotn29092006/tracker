@@ -93,6 +93,16 @@ export function ProfileScreen() {
     if (ok) remove.mutate(e.id);
   }
 
+  async function saveProfile(p: { name: string; height_cm: number | null }) {
+    try {
+      await update.mutateAsync(p);
+      toast('Сохранено', 'success');
+    } catch (err) {
+      const msg = (err as Error)?.message ?? '';
+      toast(msg ? `Ошибка: ${msg}` : 'Не удалось сохранить', 'error');
+    }
+  }
+
   return (
     <div>
       <AppHeader title="Профиль" />
@@ -215,7 +225,7 @@ export function ProfileScreen() {
         Трекер · сборка {APP_VERSION}
       </p>
 
-      <ProfileEditForm open={editOpen} onClose={() => setEditOpen(false)} initialName={profile?.name ?? ''} initialHeight={profile?.height_cm ?? null} onSave={(p) => update.mutate(p)} />
+      <ProfileEditForm open={editOpen} onClose={() => setEditOpen(false)} initialName={profile?.name ?? ''} initialHeight={profile?.height_cm ?? null} onSave={saveProfile} />
       <BodyEntryForm open={bodyForm} onClose={() => setBodyForm(false)} />
       <Lightbox url={lightbox} onClose={() => setLightbox(null)} />
     </div>

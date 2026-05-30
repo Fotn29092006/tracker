@@ -37,7 +37,9 @@
 // v26: profile save hardened — UPDATE existing row (+ insert fallback) instead
 // of upsert (which needs an INSERT policy profiles may lack); clearer avatar
 // error pointing at the avatar_url migration.
-const CACHE = 'tracker-shell-v26';
+// v27: explicit success/error toast on profile save (name/height) — confirms
+// the write and surfaces any real error (DB verified fine; UPDATE fix in v26).
+const CACHE = 'tracker-shell-v27';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
