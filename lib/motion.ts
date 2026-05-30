@@ -1,11 +1,14 @@
 // Shared Framer Motion tokens — keeps transitions consistent and "native".
 import type { Transition, Variants } from 'framer-motion';
 
+// Calm, low-overshoot springs. Kept gentle on purpose — stiff springs read as
+// "jerky/abrupt"; we lean toward smooth deceleration (closer to a CSS ease-out)
+// and reserve springs for small tactile feedback.
 export const spring = {
-  soft:   { type: 'spring', stiffness: 320, damping: 34, mass: 0.9 } as Transition,
-  snappy: { type: 'spring', stiffness: 480, damping: 36, mass: 0.8 } as Transition,
-  sheet:  { type: 'spring', stiffness: 360, damping: 38, mass: 1 } as Transition,
-  tab:    { type: 'spring', stiffness: 620, damping: 42 } as Transition,
+  soft:   { type: 'spring', stiffness: 300, damping: 32, mass: 0.9 } as Transition,
+  snappy: { type: 'spring', stiffness: 420, damping: 32, mass: 0.85 } as Transition,
+  sheet:  { type: 'spring', stiffness: 340, damping: 36, mass: 1 } as Transition,
+  tab:    { type: 'spring', stiffness: 340, damping: 32 } as Transition,
 };
 
 export const ease = {

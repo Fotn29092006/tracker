@@ -81,7 +81,13 @@
 // hit areas; responsive notes grid. Perf: ReminderWatcher interval no longer
 // recreated per task mutation; memoised Home + NextUpCard derivations;
 // optimizePackageImports += @tanstack.
-const CACHE = 'tracker-shell-v39';
+// v40: learned from the posuda app (calm CSS ease-out timing, no stiff springs).
+// Swipe between tabs now FOLLOWS THE FINGER (drag pager: page tracks the touch,
+// rubber-bands at the ends, commits or springs back on release) instead of an
+// instant jump. Softened motion everywhere (sheet open is a 0.3s ease-out tween,
+// tab pill spring 620->340) so opening the quick-hub / switching tabs feels
+// smooth, not abrupt.
+const CACHE = 'tracker-shell-v40';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

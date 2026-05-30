@@ -4,7 +4,7 @@ import { AnimatePresence, motion, type PanInfo } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { spring } from '@/lib/motion';
+import { ease } from '@/lib/motion';
 import { haptics } from '@/lib/haptics';
 import { Portal } from './Portal';
 
@@ -98,7 +98,7 @@ export function Sheet({ open, onClose, title, children, footer }: Props) {
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
-            transition={spring.sheet}
+            transition={{ duration: 0.3, ease: ease.out }}
             drag="y"
             dragConstraints={{ top: 0, bottom: 0 }}
             dragElastic={{ top: 0, bottom: 0.6 }}
