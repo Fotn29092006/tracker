@@ -8,7 +8,7 @@ export const spring = {
   soft:   { type: 'spring', stiffness: 300, damping: 32, mass: 0.9 } as Transition,
   snappy: { type: 'spring', stiffness: 420, damping: 32, mass: 0.85 } as Transition,
   sheet:  { type: 'spring', stiffness: 340, damping: 36, mass: 1 } as Transition,
-  tab:    { type: 'spring', stiffness: 340, damping: 32 } as Transition,
+  tab:    { type: 'spring', stiffness: 300, damping: 30 } as Transition,
 };
 
 export const ease = {

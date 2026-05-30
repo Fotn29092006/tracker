@@ -98,7 +98,7 @@ export function Sheet({ open, onClose, title, children, footer }: Props) {
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
-            transition={{ duration: 0.3, ease: ease.out }}
+            transition={{ duration: 0.36, ease: ease.out }}
             drag="y"
             dragConstraints={{ top: 0, bottom: 0 }}
             dragElastic={{ top: 0, bottom: 0.6 }}

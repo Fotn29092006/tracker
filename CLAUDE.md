@@ -43,10 +43,14 @@ month/year reports, wrapped, pomodoro, achievements, AI insights, wellness.
   locked scroller / in-flow bar.
 - **No `backdrop-filter` on fixed/overlay elements** — it janks on iOS. Use solid
   backgrounds (tab bar, sheet/dialog overlays).
-- **Motion is calm & non-compounding:** one opacity-only screen entrance
-  (`app/(app)/template.tsx` — opacity only, NO transform, so the fixed FAB isn't
-  re-rooted to a transformed ancestor). `TabPanel` is opacity-only; list stagger
-  is a no-op (`lib/motion.ts`). Reserve motion for micro-interactions.
+- **Motion is calm & gentle:** screen entrance is a short ease-out fade +
+  directional x-slide (`app/(app)/template.tsx`), direction set by
+  `lib/navDirection` from swipes (`components/nav/SwipeNav.tsx` — a finger-follow
+  drag pager) and tab taps. The FAB + overlays live in `AppShell`/Portals
+  (OUTSIDE `template`), so the template transform can't re-root them; the sticky
+  `AppHeader` is fine inside it. Springs in `lib/motion.ts` are deliberately soft
+  — stiff springs read as "jerky" (learned from the posuda app's CSS ease-outs).
+  Sheets use a 0.36s ease-out tween, not a spring. List stagger is a no-op.
 - **Inserts must stamp `user_id` via `await getUserId()`** (`lib/supabase/client.ts`),
   never a React-state value — avoids the cold-start race. Reads rely on RLS.
 - Colour/spacing/radii = CSS variables in `globals.css`; theme switch = single

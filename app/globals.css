@@ -60,6 +60,7 @@
   --negative-16:    rgba(255, 107, 122, 0.16);
   --warning:        #FFB454;
   --warning-12:     rgba(255, 180, 84, 0.13);
+  --warning-20:     rgba(255, 180, 84, 0.22);
   --info:           #57C7FF;
 
   /* ── Elevation shadows ── */
@@ -123,6 +124,7 @@
   --negative-16:    rgba(229, 64, 79, 0.13);
   --warning:        #C77A12;
   --warning-12:     rgba(199, 122, 18, 0.12);
+  --warning-20:     rgba(199, 122, 18, 0.22);
   --info:           #1B86D6;
 
   --shadow-sm:  0 1px 2px rgba(15,20,35,0.06);

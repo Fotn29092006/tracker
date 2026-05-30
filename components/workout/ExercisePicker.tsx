@@ -65,7 +65,7 @@ export function ExercisePicker({
 
         <button
           onClick={() => setCustom(true)}
-          className="w-full flex items-center gap-3 rounded-[14px] border border-dashed border-[var(--border-strong)] p-3 mb-3 text-[var(--accent)]"
+          className="w-full flex items-center gap-3 rounded-[var(--r-md)] border border-dashed border-[var(--border-strong)] p-3 mb-3 text-[var(--accent)]"
         >
           <span className="grid h-9 w-9 place-items-center rounded-full bg-[var(--accent-12)]"><Plus size={18} /></span>
           <span className="text-[14px] font-medium">Своё упражнение</span>
@@ -78,7 +78,7 @@ export function ExercisePicker({
               <button
                 key={ex.id}
                 onClick={() => onPick(ex)}
-                className="w-full text-left flex items-center gap-3 rounded-[14px] bg-[var(--surface)] border border-[var(--border)] p-3"
+                className="w-full text-left flex items-center gap-3 rounded-[var(--r-md)] bg-[var(--surface)] border border-[var(--border)] p-3"
               >
                 <div className="min-w-0 flex-1">
                   <p className="text-[15px] font-medium truncate">{ex.name}</p>

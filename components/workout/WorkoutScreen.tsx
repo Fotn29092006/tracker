@@ -165,7 +165,7 @@ export function WorkoutScreen() {
                   <motion.div
                     key={muscle}
                     initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
-                    className="mt-3 rounded-[14px] bg-[var(--surface-alt)] p-3.5"
+                    className="mt-3 rounded-[var(--r-md)] bg-[var(--surface-alt)] p-3.5"
                   >
                     <div className="flex items-center justify-between mb-1.5">
                       <span className="text-[15px] font-semibold">{MUSCLE_LABELS[muscle]}</span>

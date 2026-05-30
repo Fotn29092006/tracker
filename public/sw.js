@@ -87,7 +87,14 @@
 // instant jump. Softened motion everywhere (sheet open is a 0.3s ease-out tween,
 // tab pill spring 620->340) so opening the quick-hub / switching tabs feels
 // smooth, not abrupt.
-const CACHE = 'tracker-shell-v40';
+// v41: corner/border QA + softer/slower motion. Finance hero glow is now a
+// radial-gradient (a blurred child inside rounded+overflow-hidden squared the
+// card corners on iOS). Softer swipe (gentler spring-back, easier commit) and
+// slower transitions (sheet 0.36s, page 0.34s, tab pill 340->300). Unified
+// list-row radius (task rows --r-lg->--r-md to match finance/profile rows),
+// tokenized stray radii, aligned confirm to the sheet, restored the warning
+// note's border (new --warning-20 token).
+const CACHE = 'tracker-shell-v41';
 const SHELL = ['/', '/sign-in', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {

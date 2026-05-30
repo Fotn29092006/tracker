@@ -31,7 +31,7 @@ export const TaskRow = memo(function TaskRow({
       <SwipeRow onDelete={() => onDelete(task)}>
         <div
           onClick={() => onEdit(task)}
-          className="flex items-start gap-3 bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-lg)] p-3.5 cursor-pointer active:bg-[var(--surface-alt)] transition-colors"
+          className="flex items-start gap-3 bg-[var(--surface)] border border-[var(--border)] rounded-[var(--r-md)] p-3.5 cursor-pointer active:bg-[var(--surface-alt)] transition-colors"
         >
           <div className="pt-0.5">
             <Check checked={done} onChange={() => onToggle(task)} />

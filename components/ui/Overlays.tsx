@@ -102,7 +102,7 @@ export function OverlaysProvider({ children }: { children: React.ReactNode }) {
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: 8 }}
                   transition={spring.snappy}
-                  className="relative w-full max-w-[360px] rounded-[24px] bg-[var(--bg-elev)] border border-[var(--border)] p-5 shadow-[var(--shadow-lg)]"
+                  className="relative w-full max-w-[360px] rounded-[26px] bg-[var(--bg-elev)] border border-[var(--border)] p-5 shadow-[var(--shadow-lg)]"
                 >
                   <h3 className="text-[18px] font-semibold tracking-tight">{confirmState.title}</h3>
                   {confirmState.message && (

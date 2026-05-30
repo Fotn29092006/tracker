@@ -15,9 +15,9 @@ const ORDER = NAV_ITEMS.map((n) => n.href);
 // vertical scrolling stays native and untouched.
 const DECIDE = 10; // px before we commit to a direction
 const H_RATIO = 1.2; // |dx| must beat |dy| by this to count as horizontal
-const COMMIT_FRACTION = 0.3; // dragged past 30% of width → navigate
-const COMMIT_VELOCITY = 0.45; // or flicked faster than this (px/ms)
-const SETTLE = 'transform 0.34s cubic-bezier(0.22,1,0.36,1)';
+const COMMIT_FRACTION = 0.26; // dragged past this fraction of width → navigate
+const COMMIT_VELOCITY = 0.4; // or flicked faster than this (px/ms)
+const SETTLE = 'transform 0.44s cubic-bezier(0.22,1,0.36,1)'; // gentle spring-back
 
 // SSR-safe layout effect (avoids the new page painting at the old drag offset).
 const useIsoLayout = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
@@ -73,7 +73,7 @@ export function SwipeNav({ children }: { children: React.ReactNode }) {
       const idx = idxRef.current;
       // Rubber-band when there's no tab to go to in that direction.
       const blocked = (dx > 0 && idx <= 0) || (dx < 0 && idx >= ORDER.length - 1);
-      const eff = blocked ? dx * 0.32 : dx;
+      const eff = blocked ? dx * 0.25 : dx;
       el.style.transform = `translateX(${eff}px)`;
     };
 

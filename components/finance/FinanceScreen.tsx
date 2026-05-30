@@ -100,7 +100,10 @@ export function FinanceScreen() {
         initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={spring.soft}
         className="rounded-[var(--r-xl)] p-5 mb-4 relative overflow-hidden border border-[var(--border)] bg-[var(--surface)]"
       >
-        <div aria-hidden className="absolute -right-8 -top-10 h-40 w-40 rounded-full blur-[60px] opacity-25" style={{ backgroundImage: 'var(--accent-grad)' }} />
+        {/* Glow via a radial-gradient, NOT a blurred child — a filter:blur child
+            inside overflow-hidden+rounded breaks the corner clipping on iOS
+            (square corners). A gradient clips cleanly and costs no paint. */}
+        <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: 'radial-gradient(160px 140px at 100% 0%, var(--accent-20), transparent 70%)' }} />
         <p className="relative text-[13px] text-[var(--text-muted)] mb-1">Всего на счетах</p>
         <p className="relative num text-[clamp(30px,10vw,46px)] font-bold tracking-tight leading-none"><AnimatedNumber value={total} format={fmtAmount} /> <span className="text-[var(--text-muted)] text-[24px]">{currencySymbol(currency)}</span></p>
         <div className="relative mt-4 flex gap-5">
